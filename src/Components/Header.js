@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Logo from "../assets/logo.png";
 import Login from "../assets/login.png";
 
-function Header() {
+function Header({ loginClick, aboutUsClick, contactClick }) {
   const [hamburgerClicked, setHamburgerClicked] = useState(false);
 
   return (
@@ -15,12 +15,16 @@ function Header() {
         <div className="navigation">
           <div className="item">Home</div>
           <div className="item">News</div>
-          <div className="item">About us</div>
-          <div className="item">Contact</div>
+          <div className="item" onClick={() => aboutUsClick(true)}>
+            About us
+          </div>
+          <div className="item" onClick={() => contactClick(true)}>
+            Contact
+          </div>
         </div>
         <div className="separator"></div>
         <div className="auth">
-          <div className="btn login">
+          <div className="btn login" onClick={() => loginClick(true)}>
             <img src={Login} alt="login-btn" />
             Login
           </div>
@@ -37,9 +41,33 @@ function Header() {
         <div className={`navigation ${hamburgerClicked ? "active" : ""}`}>
           <div className="item">Home</div>
           <div className="item">News</div>
-          <div className="item">About us</div>
-          <div className="item">Contact</div>
-          <div className="item">Login</div>
+          <div
+            className="item"
+            onClick={() => {
+              setHamburgerClicked(false);
+              aboutUsClick(true);
+            }}
+          >
+            About us
+          </div>
+          <div
+            className="item"
+            onClick={() => {
+              setHamburgerClicked(false);
+              contactClick(true);
+            }}
+          >
+            Contact
+          </div>
+          <div
+            className="item"
+            onClick={() => {
+              loginClick(true);
+              setHamburgerClicked(false);
+            }}
+          >
+            Login
+          </div>
           <div className="item">Register</div>
         </div>
       </div>

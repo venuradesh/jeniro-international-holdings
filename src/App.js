@@ -8,7 +8,6 @@ const App = () => {
   return (
     <Router>
       <Container>
-        <Header />
         <Routes>
           <Route exact path="/" element={<LandingPage />} />
         </Routes>
