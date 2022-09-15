@@ -1,13 +1,63 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;500;600&family=Poppins:wght@100;400;500&display=swap");
+
+:root {
+  --theme1: #2e3545;
+  --white: #f2f2f2;
+  --btn-red: #f26b6b;
+  --btn-color: #9db6eb;
+  --btn-color-alt: #7284ab;
+  --logo-color: #f28627;
+
+  --font-family1: "Open Sans", sans-serif;
+  --font-family2: "Poppins", sans-serif;
+
+  --font-w-300: 300;
+  --font-w-400: 400;
+  --font-w-500: 500;
+  --font-w-600: 600;
+
+  --main-heading: 4rem;
+  --heading: 2rem;
+  --normal: 1rem;
+  --small: 0.8rem;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family1);
+  font-size: var(--normal);
+}
+
+@media only screen and (max-width: 768px) {
+  :root {
+    --main-heading: 3rem;
+    --heading: 1.7rem;
+    --normal: 0.8rem;
+    --small: 0.6rem;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  :root {
+    --main-heading: 2.5rem;
+    --heading: 1.7rem;
+    --normal: 0.8rem;
+    --small: 0.6rem;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  :root {
+    --main-heading: 2.3rem;
+    --heading: 1.2rem;
+    --normal: 0.8rem;
+    --small: 0.6rem;
+  }
 }
