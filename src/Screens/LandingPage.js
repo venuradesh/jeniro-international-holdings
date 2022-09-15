@@ -1,13 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 //images
 import Wallpaper from "../assets/wallpaper1.jpg";
 import DownArraw from "../assets/down-arrow.png";
+import Header from "../Components/Header";
+import AboutUs from "../Components/Login";
+import Contact from "../Components/Contact";
+import Login from "../Components/Login";
 
 function LandingPage() {
+  const [jobTypeClicked, setJobTypeClicked] = useState(false);
+  const [loginClicked, setLoginClicked] = useState(false);
+  const [aboutUsClicked, setAboutUsClicked] = useState(false);
+  const [contactClicked, setContactClicked] = useState(false);
+
+  useEffect(() => {
+    console.log(aboutUsClicked, contactClicked);
+  });
+
   return (
     <Container>
+      <Header loginClick={setLoginClicked} aboutUsClick={setAboutUsClicked} contactClick={setContactClicked} />
+      {aboutUsClicked || contactClicked || loginClicked ? (
+        <div className="container-wrapper">
+          <div
+            className="blured-background"
+            onClick={() => {
+              setContactClicked(false);
+            }}
+          ></div>
+          {loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact /> : <></>}
+        </div>
+      ) : (
+        <></>
+      )}
       <div className="background-image"></div>
       <div className="background-tint"></div>
       <HeroContainer>
@@ -19,7 +46,7 @@ function LandingPage() {
           <div className="desc">Find jobs, Employment and Career opportunities</div>
           <div className="input-field-container">
             <input placeholder="Job Title" type="text" name="keyword" id="job-title" className="job-title" />
-            <div className="select">
+            <div className={`select ${jobTypeClicked ? "active" : ""}`} onClick={() => (!jobTypeClicked ? setJobTypeClicked(true) : setJobTypeClicked(false))}>
               <select name="job-type" id="job-type" className="job-type">
                 <option value="none" hidden selected className="select-item">
                   Job Type
@@ -105,6 +132,28 @@ const Container = styled.div`
       }
     }
   }
+
+  .container-wrapper {
+    width: 100%;
+    height: 100vh;
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .blured-background {
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(8px);
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  }
 `;
 
 const HeroContainer = styled.div`
@@ -131,11 +180,11 @@ const HeroContainer = styled.div`
       font-size: var(--normal);
       color: var(--white);
       font-weight: var(--font-w-300);
-      margin-top: 10px;
+      margin-top: 15px;
     }
 
     .input-field-container {
-      margin-top: 20px;
+      margin-top: 25px;
       display: flex;
       align-items: center;
       column-gap: 20px;
@@ -169,6 +218,13 @@ const HeroContainer = styled.div`
           right: 15px;
           bottom: 50%;
           transform: translateY(50%);
+          transition: all 0.3s ease;
+        }
+
+        &.active {
+          &::after {
+            clip-path: polygon(50% 0, 0 100%, 100% 100%);
+          }
         }
 
         .job-type {
