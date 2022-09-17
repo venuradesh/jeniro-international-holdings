@@ -20,13 +20,8 @@ function LandingPage() {
       <Header loginClick={setLoginClicked} aboutUsClick={setAboutUsClicked} contactClick={setContactClicked} />
       {aboutUsClicked || contactClicked || loginClicked ? (
         <div className="container-wrapper">
-          <div
-            className="blured-background"
-            onClick={() => {
-              setContactClicked(false);
-            }}
-          ></div>
-          {loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact /> : aboutUsClicked ? <AboutUs aboutUsClick={setAboutUsClicked} /> : <></>}
+          <div className="blured-background"></div>
+          {loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact contactClick={setContactClicked} /> : aboutUsClicked ? <AboutUs aboutUsClick={setAboutUsClicked} /> : <></>}
         </div>
       ) : (
         <></>
