@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 //images
 import Wallpaper from "../assets/wallpaper1.jpg";
 import DownArraw from "../assets/down-arrow.png";
 import Header from "../Components/Header";
-import AboutUs from "../Components/Login";
+import AboutUs from "../Components/AboutUs";
 import Contact from "../Components/Contact";
 import Login from "../Components/Login";
 
@@ -14,10 +14,6 @@ function LandingPage() {
   const [loginClicked, setLoginClicked] = useState(false);
   const [aboutUsClicked, setAboutUsClicked] = useState(false);
   const [contactClicked, setContactClicked] = useState(false);
-
-  useEffect(() => {
-    console.log(aboutUsClicked, contactClicked);
-  });
 
   return (
     <Container>
@@ -30,7 +26,7 @@ function LandingPage() {
               setContactClicked(false);
             }}
           ></div>
-          {loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact /> : <></>}
+          {loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact /> : aboutUsClicked ? <AboutUs aboutUsClick={setAboutUsClicked} /> : <></>}
         </div>
       ) : (
         <></>
