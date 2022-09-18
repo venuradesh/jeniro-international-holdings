@@ -1,19 +1,25 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+
+//images
 import Logo from "../assets/logo.png";
 import Login from "../assets/login.png";
 
-function Header({ loginClick, aboutUsClick, contactClick }) {
+function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, registerPage = false }) {
+  const navigate = useNavigate();
   const [hamburgerClicked, setHamburgerClicked] = useState(false);
 
   return (
-    <Container>
+    <Container className={scrolled ? "active" : ""}>
       <div className="logo-container">
         <img src={Logo} alt="jeniro-logo" />
       </div>
       <div className="navigation-container">
         <div className="navigation">
-          <div className="item">Home</div>
+          <div className="item" onClick={() => navigate("/")}>
+            Home
+          </div>
           <div className="item">News</div>
           <div className="item" onClick={() => aboutUsClick(true)}>
             About us
@@ -28,7 +34,13 @@ function Header({ loginClick, aboutUsClick, contactClick }) {
             <img src={Login} alt="login-btn" />
             Login
           </div>
-          <div className="btn register">Register</div>
+          {!registerPage ? (
+            <div className="btn register" onClick={() => navigate("/register")}>
+              Register
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
 
@@ -39,7 +51,9 @@ function Header({ loginClick, aboutUsClick, contactClick }) {
           <span></span>
         </div>
         <div className={`navigation ${hamburgerClicked ? "active" : ""}`}>
-          <div className="item">Home</div>
+          <div className="item" onClick={() => navigate("/")}>
+            Home
+          </div>
           <div className="item">News</div>
           <div
             className="item"
@@ -68,7 +82,13 @@ function Header({ loginClick, aboutUsClick, contactClick }) {
           >
             Login
           </div>
-          <div className="item">Register</div>
+          {!registerPage ? (
+            <div className="item" onClick={() => navigate("/register")}>
+              Register
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </Container>
@@ -88,6 +108,12 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
+  transition: all 0.5s ease;
+
+  &.active {
+    background-color: var(--theme1);
+    box-shadow: 0 2px 2px 0 var(--theme1);
+  }
 
   .logo-container {
     img {
