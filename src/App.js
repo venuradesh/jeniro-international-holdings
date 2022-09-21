@@ -6,8 +6,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import LandingPage from "./Screens/LandingPage";
 import Register from "./Screens/Register";
 import AdminDashboard from "./Screens/AdminDashboard";
+
+//components
 import AdminHome from "./Components/Admin/AdminHome";
 import Users from "./Components/Admin/Users";
+import AddJobs from "./Components/Admin/AddJobs";
 
 const App = () => {
   return (
@@ -19,6 +22,7 @@ const App = () => {
           <Route exact path="/admin" element={<AdminDashboard />}>
             <Route index element={<AdminHome />} />
             <Route path="users" element={<Users />} />
+            <Route path="addjob" element={<AddJobs />} />
           </Route>
           <Route exact path="*" element={<Navigate to="/" />} />
         </Routes>
