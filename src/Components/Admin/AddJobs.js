@@ -6,7 +6,7 @@ function AddJobs() {
   return (
     <Container>
       <div className="title-container">Add a Job</div>
-      <div className="form-container">
+      <form className="form-container">
         <div className="company-info item">
           <InputFeild type="text" content="Company Name" id="company-name" />
           <InputFeild type="text" content="Work Location" id="location" />
@@ -42,7 +42,7 @@ function AddJobs() {
             Reset
           </button>
         </div>
-      </div>
+      </form>
     </Container>
   );
 }
