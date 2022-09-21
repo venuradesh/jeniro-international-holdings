@@ -88,6 +88,7 @@ const Container = styled.div`
       font-size: var(--small);
       color: var(--btn-color-alt);
       font-weight: var(--font-w-700);
+      margin-bottom: 5px;
 
       span {
         font-weight: var(--font-w-300);
