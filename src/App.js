@@ -13,6 +13,7 @@ import Users from "./Components/Admin/Users";
 import AddJobs from "./Components/Admin/AddJobs";
 import ShowJobs from "./Components/Admin/ShowJobs";
 import AddNews from "./Components/Admin/AddNews";
+import ShowNews from "./Components/Admin/ShowNews";
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
             <Route path="addjob" element={<AddJobs />} />
             <Route path="showjobs" element={<ShowJobs />} />
             <Route path="addnews" element={<AddNews />} />
+            <Route path="shownews" element={<ShowNews />} />
           </Route>
           <Route exact path="*" element={<Navigate to="/" />} />
         </Routes>
