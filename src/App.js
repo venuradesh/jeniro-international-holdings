@@ -5,7 +5,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 //screens
 import LandingPage from "./Screens/LandingPage";
 import Register from "./Screens/Register";
-import { useEffect } from "react";
+import AdminDashboard from "./Screens/AdminDashboard";
+import AdminHome from "./Components/Admin/AdminHome";
+import Users from "./Components/Admin/Users";
 
 const App = () => {
   return (
@@ -14,6 +16,10 @@ const App = () => {
         <Routes>
           <Route exact path="/" element={<LandingPage />} />
           <Route exact path="/register" element={<Register />} />
+          <Route exact path="/admin" element={<AdminDashboard />}>
+            <Route index element={<AdminHome />} />
+            <Route path="users" element={<Users />} />
+          </Route>
           <Route exact path="*" element={<Navigate to="/" />} />
         </Routes>
       </Container>
