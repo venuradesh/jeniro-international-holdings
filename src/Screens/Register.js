@@ -65,7 +65,7 @@ function Register() {
               </div>
               <InputFeild type="text" content="Job Types preffered (comma separated)" id="job-types" />
               <InputFeild type="text" content="Maximum Educational Qualification (eg: Bachelors, Masters, Advanced Level)" id="edu-qualification" />
-              <div className="btn-container">
+              {/* <div className="btn-container">
                 <div className="edu-qualifications-btn btn">
                   <input type="file" name="edu-qualifcations-upload" id="edu-qualifications-upload" />
                   Upload Educational Certificates
@@ -74,7 +74,7 @@ function Register() {
                   <input type="file" name="passport-copy-upload" id="passport-copy-upload" />
                   upload passport copy
                 </div>
-              </div>
+              </div> */}
               <textarea name="professional-qualifications" id="professional-qualifications" placeholder="Professional Qualifications"></textarea>
               <div className="btn-container">
                 <div className="submit btn">Submit</div>
