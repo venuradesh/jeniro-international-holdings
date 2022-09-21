@@ -11,6 +11,7 @@ import AdminDashboard from "./Screens/AdminDashboard";
 import AdminHome from "./Components/Admin/AdminHome";
 import Users from "./Components/Admin/Users";
 import AddJobs from "./Components/Admin/AddJobs";
+import ShowJobs from "./Components/Admin/ShowJobs";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
             <Route index element={<AdminHome />} />
             <Route path="users" element={<Users />} />
             <Route path="addjob" element={<AddJobs />} />
+            <Route path="showjobs" element={<ShowJobs />} />
           </Route>
           <Route exact path="*" element={<Navigate to="/" />} />
         </Routes>
