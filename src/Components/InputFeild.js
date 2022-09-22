@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-function InputFeild({ type, content, id }) {
+function InputFeild({ type, content, id, onChange, error = false }) {
   return (
-    <Container>
+    <Container onChange={onChange}>
       <input type={type} id={id} name={id} className={`${type} input`} autoComplete="off" required />
-      <label htmlFor={id} className="label-container">
-        <span className="label-content">{content}</span>
+      <label htmlFor={id} className={`label-container ${error ? "error" : ""}`}>
+        <span className={`label-content ${error ? "error" : ""}`}>{content}</span>
       </label>
     </Container>
   );
@@ -37,14 +37,33 @@ const Container = styled.div`
       right: 100%;
     }
 
+    &.error {
+      border-bottom: 1px solid var(--btn-red);
+
+      &::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transition: all 0.3s ease;
+        border-bottom: 2px solid var(--btn-red);
+        right: 100%;
+      }
+    }
+
     .label-content {
       position: absolute;
       bottom: 0%;
       transition: all 0.3s ease;
+      color: var(--theme1);
       font-family: var(--font-family1);
       font-size: var(--small);
       font-weight: var(--font-w-500);
       opacity: 0.7;
+
+      &.error {
+        color: var(--btn-red);
+      }
     }
   }
 
