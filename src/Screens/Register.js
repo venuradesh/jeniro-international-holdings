@@ -1,5 +1,7 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 //component
 import Header from "../Components/Header";
@@ -12,12 +14,26 @@ import InputFeild from "../Components/InputFeild";
 import Wallpaper from "../assets/wallpaper3.jpg";
 import Logo from "../assets/logo.png";
 
+const API_URL = "http://localhost:5000/register";
+
 function Register() {
-  const container = useRef(null);
+  const navigate = useNavigate();
   const [loginClicked, setLoginClicked] = useState(false);
   const [aboutUsClicked, setAboutUsClicked] = useState(false);
   const [contactClicked, setContactClicked] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [address, setAddress] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [jobTypes, setJobTypes] = useState("");
+  const [password, setPassword] = useState("");
+  const [qualifications, setQualifications] = useState("");
+  const [professionalQualifications, setProfessionalQualifications] = useState("");
 
   useEffect(() => {
     window.addEventListener("scroll", () => {
@@ -28,6 +44,49 @@ function Register() {
       }
     });
   });
+
+  const onSubmitClick = (e) => {
+    e.preventDefault();
+
+    if (firstName && password && lastName && address && email && phone && jobTypes && qualifications && professionalQualifications) {
+      setError("");
+      axios
+        .post(API_URL, {
+          firstName,
+          lastName,
+          password,
+          address,
+          email,
+          phone,
+          jobTypes,
+          qualifications,
+          professionalQualifications,
+        })
+        .then((result) => {
+          if (result.status === 201) {
+            localStorage.setItem("user", result.data.userId);
+            navigate("/");
+          } else {
+            console.log(result);
+          }
+        })
+        .catch((err) => {
+          if (err.response.status >= 400) {
+            setError(err.response.data.message);
+            setEmailError(err.response.data.emailError);
+            setPhoneError(err.response.data.phoneError);
+          }
+        });
+    } else {
+      setError("One or more fields missing");
+    }
+  };
+
+  const onResetClick = () => {
+    setEmailError(false);
+    setPhoneError(false);
+    setError(false);
+  };
 
   return (
     <Container id="register-container">
@@ -55,16 +114,19 @@ function Register() {
           <div className="form">
             <div className="left-side-container">
               <div className="name-container half-container">
-                <InputFeild type="text" content="First Name" id="first-name" />
-                <InputFeild type="text" content="Last Name" id="last-name" />
+                <InputFeild type="text" content="First Name" id="first-name" onChange={(e) => setFirstName(e.target.value)} />
+                <InputFeild type="text" content="Last Name" id="last-name" onChange={(e) => setLastName(e.target.value)} />
               </div>
-              <InputFeild type="text" content="Address" id="address" />
+              <InputFeild type="text" content="Address" id="address" onChange={(e) => setAddress(e.target.value)} />
               <div className="contact-container half-container">
-                <InputFeild type="email" content="Email" id="email" />
-                <InputFeild type="tel" content="Contact No." id="phone" />
+                <InputFeild type="email" content="Email" id="email" onChange={(e) => setEmail(e.target.value)} error={emailError} />
+                <InputFeild type="tel" content="Contact No." id="phone" onChange={(e) => setPhone(e.target.value)} error={phoneError} />
               </div>
-              <InputFeild type="text" content="Job Types preffered (comma separated)" id="job-types" />
-              <InputFeild type="text" content="Maximum Educational Qualification (eg: Bachelors, Masters, Advanced Level)" id="edu-qualification" />
+              <div className="qul-passoword-container half-container">
+                <InputFeild type="text" content="Job Types preffered (comma separated)" id="job-types" onChange={(e) => setJobTypes(e.target.value)} />
+                <InputFeild type="password" content="Password" onChange={(e) => setPassword(e.target.value)} />
+              </div>
+              <InputFeild type="text" content="Maximum Educational Qualification (eg: Bachelors, Masters, Advanced Level)" id="edu-qualification" onChange={(e) => setQualifications(e.target.value)} />
               {/* <div className="btn-container">
                 <div className="edu-qualifications-btn btn">
                   <input type="file" name="edu-qualifcations-upload" id="edu-qualifications-upload" />
@@ -75,10 +137,13 @@ function Register() {
                   upload passport copy
                 </div>
               </div> */}
-              <textarea name="professional-qualifications" id="professional-qualifications" placeholder="Professional Qualifications"></textarea>
+              <textarea name="professional-qualifications" id="professional-qualifications" placeholder="Professional Qualifications" onChange={(e) => setProfessionalQualifications(e.target.value)}></textarea>
+              {error ? <div className="error-container">*{error}</div> : <></>}
               <div className="btn-container">
-                <div className="submit btn">Submit</div>
-                <button type="reset" className="reset btn">
+                <div className="submit btn" onClick={(e) => onSubmitClick(e)}>
+                  Submit
+                </div>
+                <button type="reset" className="reset btn" onClick={() => onResetClick()}>
                   Reset
                 </button>
               </div>
@@ -293,6 +358,13 @@ const RegisterContainer = styled.form`
               }
             }
           }
+        }
+
+        .error-container {
+          width: 100%;
+          text-align: center;
+          color: var(--btn-red);
+          font-size: var(--small);
         }
       }
     }
