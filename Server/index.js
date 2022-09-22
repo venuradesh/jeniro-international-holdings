@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { collection, addDoc, getDocs, getDoc, doc } from "firebase/firestore";
+import { collection, addDoc, getDocs, getDoc, doc, query, where } from "firebase/firestore";
 import db from "./firebase-config.js";
 
 const app = express();
@@ -60,5 +60,26 @@ app.get("/getUser", async (req, res) => {
     }
   } catch (error) {
     res.status(400).send({ message: error });
+  }
+});
+
+app.get("/login", async (req, res) => {
+  try {
+    const collectionRef = collection(db, "users");
+    const result = query(collectionRef, where("email", "==", req.headers.email));
+    const querySnapShot = await getDocs(result);
+    if (querySnapShot.docs.length === 0) {
+      throw { access: "denied", message: "Email doesn't exists", passwordError: false, emailError: true };
+    } else {
+      querySnapShot.docs.map((doc) => {
+        if (doc.data().password === req.headers.password) {
+          res.status(200).send({ access: "granted", userId: doc.id });
+        } else {
+          throw { access: "denied", message: "Password not matched with email", passwordError: true, emailError: false };
+        }
+      });
+    }
+  } catch (error) {
+    res.status(404).send(error);
   }
 });

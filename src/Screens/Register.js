@@ -96,7 +96,7 @@ function Register() {
           <div className="blured-background">
             <img src={Logo} alt="logo-image" />
           </div>
-          {loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact contactClick={setContactClicked} /> : aboutUsClicked ? <AboutUs aboutUsClick={setAboutUsClicked} /> : <></>}
+          <div className="login-container">{loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact contactClick={setContactClicked} /> : aboutUsClicked ? <AboutUs aboutUsClick={setAboutUsClicked} /> : <></>}</div>
         </div>
       ) : (
         <></>
@@ -188,7 +188,7 @@ const Container = styled.div`
     top: 0;
     left: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
 
     .blured-background {
@@ -199,6 +199,14 @@ const Container = styled.div`
       top: 0;
       left: 0;
       z-index: -1;
+    }
+
+    .login-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 

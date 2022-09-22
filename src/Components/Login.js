@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 //images
 import Cover from "../assets/wallpaper2.jpg";
@@ -10,11 +12,43 @@ import Close from "../assets/close.png";
 import InputFeild from "./InputFeild";
 
 function Login({ loginClick }) {
+  const navigate = useNavigate();
   const [err, setErr] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const onSubmitClick = () => {
+    axios
+      .get("http://localhost:5000/login", {
+        headers: {
+          email: email,
+          password: password,
+        },
+      })
+      .then((result) => {
+        if (result.data.access === "granted") {
+          setEmailError(false);
+          setPasswordError(false);
+          localStorage.setItem("user", result.data.userId);
+          loginClick(false);
+          navigate("/");
+          window.location.reload();
+        }
+      })
+      .catch((err) => {
+        if (err.response.data.access === "denied") {
+          if (err.response.data.emailError) {
+            setEmailError(true);
+          } else if (err.response.data.passwordError) {
+            setEmailError(false);
+            setPasswordError(true);
+          }
+        }
+        setErr(err.response.data.message);
+      });
+  };
 
   return (
     <Container>
@@ -32,13 +66,20 @@ function Login({ loginClick }) {
         </div>
         <div className="title">Login</div>
         <div className="input-items-container">
-          <InputFeild type="email" content="Email" id="email" onChange={(e) => setEmail(e.target.value)} />
-          <InputFeild type="password" content="Password" id="password" onChange={(e) => setPassword(e.target.value)} />
+          <InputFeild type="email" content="Email" id="email" onChange={(e) => setEmail(e.target.value)} error={emailError} />
+          <InputFeild type="password" content="Password" id="password" onChange={(e) => setPassword(e.target.value)} error={passwordError} />
         </div>
         {err ? <div className="error-container">*{err}</div> : <></>}
         <div className="btn-container">
           <div className="forgot-password">Forgot password</div>
-          <div className="submit">Submit</div>
+          <div
+            className="submit"
+            onClick={() => {
+              onSubmitClick();
+            }}
+          >
+            Submit
+          </div>
         </div>
         <div className="create-acc">create an account</div>
       </div>
@@ -210,6 +251,7 @@ const Container = styled.div`
 
   @media only screen and (max-width: 768px) {
     width: 80%;
+    max-height: 400px;
     height: 50%;
   }
 

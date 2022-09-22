@@ -64,7 +64,12 @@ function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, regi
         <div className="auth">
           {!userId ? (
             <>
-              <div className="btn login" onClick={() => loginClick(true)}>
+              <div
+                className="btn login"
+                onClick={() => {
+                  loginClick(true);
+                }}
+              >
                 <img src={Login} alt="login-btn" />
                 Login
               </div>
