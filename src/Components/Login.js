@@ -11,6 +11,10 @@ import InputFeild from "./InputFeild";
 
 function Login({ loginClick }) {
   const [err, setErr] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <Container>
@@ -28,8 +32,8 @@ function Login({ loginClick }) {
         </div>
         <div className="title">Login</div>
         <div className="input-items-container">
-          <InputFeild type="email" content="Email" id="email" />
-          <InputFeild type="password" content="Password" id="password" />
+          <InputFeild type="email" content="Email" id="email" onChange={(e) => setEmail(e.target.value)} />
+          <InputFeild type="password" content="Password" id="password" onChange={(e) => setPassword(e.target.value)} />
         </div>
         {err ? <div className="error-container">*{err}</div> : <></>}
         <div className="btn-container">

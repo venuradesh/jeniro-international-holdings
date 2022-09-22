@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDocs, getDoc, doc } from "firebase/firestore";
 import db from "./firebase-config.js";
 
 const app = express();
@@ -45,5 +45,20 @@ app.post("/register", async (req, res) => {
   } catch (e) {
     console.error("Error adding document: ", e);
     res.status(409).send(e);
+  }
+});
+
+app.get("/getUser", async (req, res) => {
+  const userId = req.headers.userid;
+  try {
+    const docRef = doc(db, "users", userId);
+    const dataSanp = await getDoc(docRef);
+    if (dataSanp.exists()) {
+      res.status(200).send({ userData: dataSanp.data() });
+    } else {
+      res.status(404).send({ message: "no user found" });
+    }
+  } catch (error) {
+    res.status(400).send({ message: error });
   }
 });

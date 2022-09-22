@@ -1,14 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 //images
 import Logo from "../assets/logo.png";
 import Login from "../assets/login.png";
+import User from "../assets/user.png";
 
 function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, registerPage = false }) {
   const navigate = useNavigate();
   const [hamburgerClicked, setHamburgerClicked] = useState(false);
+  const [userId, setUserId] = useState(localStorage.getItem("user"));
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [userProfileClicked, setUserProfileClicked] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      axios
+        .get("http://localhost:5000/getUser", {
+          headers: {
+            userId: localStorage.getItem("user"),
+          },
+        })
+        .then((result) => {
+          setFirstName(result.data.userData.firstName);
+          setLastName(result.data.userData.lastName);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  });
+
+  const Logout = () => {
+    setFirstName("");
+    setLastName("");
+    localStorage.removeItem("user");
+    setUserId("");
+    window.location.reload();
+  };
 
   return (
     <Container className={scrolled ? "active" : ""}>
@@ -30,16 +62,33 @@ function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, regi
         </div>
         <div className="separator"></div>
         <div className="auth">
-          <div className="btn login" onClick={() => loginClick(true)}>
-            <img src={Login} alt="login-btn" />
-            Login
-          </div>
-          {!registerPage ? (
-            <div className="btn register" onClick={() => navigate("/register")}>
-              Register
-            </div>
+          {!userId ? (
+            <>
+              <div className="btn login" onClick={() => loginClick(true)}>
+                <img src={Login} alt="login-btn" />
+                Login
+              </div>
+              {!registerPage ? (
+                <div className="btn register" onClick={() => navigate("/register")}>
+                  Register
+                </div>
+              ) : (
+                <></>
+              )}
+            </>
           ) : (
-            <></>
+            <>
+              <div className="profile-name" onClick={() => (userProfileClicked ? setUserProfileClicked(false) : setUserProfileClicked(true))}>
+                <img src={User} alt="user-logo" />
+                {firstName + " " + lastName}
+              </div>
+              <div className={`logout-container ${userProfileClicked ? "active" : ""}`}>
+                <div className="profile-view logout-item">View Profile</div>
+                <div className="logout logout-item" onClick={() => Logout()}>
+                  Logout
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -51,6 +100,14 @@ function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, regi
           <span></span>
         </div>
         <div className={`navigation ${hamburgerClicked ? "active" : ""}`}>
+          {firstName ? (
+            <div className="profile-name item">
+              <img src={User} alt="user-logo" />
+              {firstName + " " + lastName}
+            </div>
+          ) : (
+            <></>
+          )}
           <div className="item" onClick={() => navigate("/")}>
             Home
           </div>
@@ -73,21 +130,31 @@ function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, regi
           >
             Contact
           </div>
-          <div
-            className="item"
-            onClick={() => {
-              loginClick(true);
-              setHamburgerClicked(false);
-            }}
-          >
-            Login
-          </div>
-          {!registerPage ? (
-            <div className="item" onClick={() => navigate("/register")}>
-              Register
-            </div>
+          {!userId ? (
+            <>
+              <div
+                className="item"
+                onClick={() => {
+                  loginClick(true);
+                  setHamburgerClicked(false);
+                }}
+              >
+                Login
+              </div>
+              {!registerPage ? (
+                <div className="item" onClick={() => navigate("/register")}>
+                  Register
+                </div>
+              ) : (
+                <></>
+              )}
+            </>
           ) : (
-            <></>
+            <>
+              <div className="Logout item" onClick={() => Logout()}>
+                Logout
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -158,6 +225,7 @@ const Container = styled.div`
       align-items: center;
       column-gap: 30px;
       color: var(--white);
+      position: relative;
 
       .btn {
         width: 150px;
@@ -181,6 +249,59 @@ const Container = styled.div`
 
         img {
           width: 20px;
+        }
+      }
+
+      .profile-name {
+        display: flex;
+        align-items: center;
+        column-gap: 10px;
+        padding: 10px 15px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: var(--normal);
+        text-transform: capitalize;
+
+        img {
+          width: 20px;
+        }
+
+        &:hover {
+          transform: scale(1.03);
+        }
+      }
+
+      .logout-container {
+        position: absolute;
+        right: 0;
+        top: 110%;
+        background-color: var(--white);
+        width: 100%;
+        height: max-content;
+        transform-origin: top;
+        transform: scaleY(0);
+        transition: all 0.3s ease;
+
+        .logout-item {
+          width: 100%;
+          height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--theme1);
+          font-size: var(--small);
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: var(--btn-color-alt);
+            color: var(--white);
+          }
+        }
+
+        &.active {
+          transform: scaleY(1);
         }
       }
 
@@ -281,6 +402,17 @@ const Container = styled.div`
 
           &:hover {
             background-color: var(--btn-color);
+          }
+
+          img {
+            width: 20px;
+          }
+
+          &.profile-name {
+            column-gap: 10px;
+            background-color: var(--theme1);
+            color: var(--white);
+            text-transform: capitalize;
           }
         }
       }
