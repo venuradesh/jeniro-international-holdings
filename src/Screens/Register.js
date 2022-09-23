@@ -16,8 +16,8 @@ import InputFeild from "../Components/InputFeild";
 import Wallpaper from "../assets/wallpaper3.jpg";
 import Logo from "../assets/logo.png";
 
-const LocalHostAPI = "http://localhost:5000";
-// const herokuAPI = 'https://jeniro-international-holdings.herokuapp.com'
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function Register() {
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ function Register() {
     if (firstName && password && nic && lastName && address && email && phone && jobTypes && qualifications && professionalQualifications) {
       setError("");
       axios
-        .post(`${LocalHostAPI}/register`, {
+        .post(`${API_URL}/register`, {
           firstName,
           lastName,
           password,

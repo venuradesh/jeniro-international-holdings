@@ -10,8 +10,8 @@ import InputFeild from "../InputFeild";
 //images
 import Done from "../../assets/checked.png";
 
-const LocalHostAPI = "http://localhost:5000";
-// const herokuAPI = 'https://jeniro-international-holdings.herokuapp.com'
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function AddAdministrator() {
   const [loading, setLoading] = useState(false);
@@ -42,7 +42,7 @@ function AddAdministrator() {
     setLoading(true);
     if (firstName && nic && lastName && address && phone && email && password && position) {
       axios
-        .post(`${LocalHostAPI}/admin-registration`, {
+        .post(`${API_URL}/admin-registration`, {
           firstName,
           lastName,
           address,
