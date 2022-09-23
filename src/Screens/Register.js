@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Lottie from "react-lottie";
+import * as animationData from "../assets/Lotties/submit-loading.json";
 
 //component
 import Header from "../Components/Header";
@@ -14,10 +16,12 @@ import InputFeild from "../Components/InputFeild";
 import Wallpaper from "../assets/wallpaper3.jpg";
 import Logo from "../assets/logo.png";
 
-const API_URL = "https://jeniro-international-holdings.herokuapp.com/register";
+const LocalHostAPI = "http://localhost:5000";
+// const herokuAPI = 'https://jeniro-international-holdings.herokuapp.com'
 
 function Register() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [loginClicked, setLoginClicked] = useState(false);
   const [aboutUsClicked, setAboutUsClicked] = useState(false);
   const [contactClicked, setContactClicked] = useState(false);
@@ -25,6 +29,7 @@ function Register() {
   const [error, setError] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
+  const [nicError, setNICError] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [address, setAddress] = useState("");
@@ -32,8 +37,18 @@ function Register() {
   const [phone, setPhone] = useState("");
   const [jobTypes, setJobTypes] = useState("");
   const [password, setPassword] = useState("");
+  const [nic, setNIC] = useState("");
   const [qualifications, setQualifications] = useState("");
   const [professionalQualifications, setProfessionalQualifications] = useState("");
+
+  const lottieOptions = {
+    loop: true,
+    autoplay: true,
+    animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   useEffect(() => {
     window.addEventListener("scroll", () => {
@@ -47,17 +62,18 @@ function Register() {
 
   const onSubmitClick = (e) => {
     e.preventDefault();
-
-    if (firstName && password && lastName && address && email && phone && jobTypes && qualifications && professionalQualifications) {
+    setLoading(true);
+    if (firstName && password && nic && lastName && address && email && phone && jobTypes && qualifications && professionalQualifications) {
       setError("");
       axios
-        .post(API_URL, {
+        .post(`${LocalHostAPI}/register`, {
           firstName,
           lastName,
           password,
           address,
           email,
           phone,
+          nic,
           jobTypes,
           qualifications,
           professionalQualifications,
@@ -65,6 +81,8 @@ function Register() {
         .then((result) => {
           if (result.status === 201) {
             localStorage.setItem("user", result.data.userId);
+            document.getElementById("reset-btn").click();
+            setLoading(false);
             navigate("/");
           } else {
             console.log(result);
@@ -72,13 +90,16 @@ function Register() {
         })
         .catch((err) => {
           if (err.response.status >= 400) {
+            setLoading(false);
             setError(err.response.data.message);
             setEmailError(err.response.data.emailError);
             setPhoneError(err.response.data.phoneError);
+            setNICError(err.response.data.nicError);
           }
         });
     } else {
       setError("One or more fields missing");
+      setLoading(false);
     }
   };
 
@@ -132,9 +153,10 @@ function Register() {
                 <InputFeild type="tel" content="Contact No." id="phone" onChange={(e) => setPhone(e.target.value)} error={phoneError} />
               </div>
               <div className="qul-passoword-container half-container">
-                <InputFeild type="text" content="Job Types preffered (comma separated)" id="job-types" onChange={(e) => setJobTypes(e.target.value)} />
+                <InputFeild type="text" content="NIC No." onChange={(e) => setNIC(e.target.value)} error={nicError} />
                 <InputFeild type="password" content="Password" onChange={(e) => setPassword(e.target.value)} />
               </div>
+              <InputFeild type="text" content="Job Types preffered (comma separated)" id="job-types" onChange={(e) => setJobTypes(e.target.value)} />
               <InputFeild type="text" content="Maximum Educational Qualification (eg: Bachelors, Masters, Advanced Level)" id="edu-qualification" onChange={(e) => setQualifications(e.target.value)} />
               {/* <div className="btn-container">
                 <div className="edu-qualifications-btn btn">
@@ -149,10 +171,10 @@ function Register() {
               <textarea name="professional-qualifications" id="professional-qualifications" placeholder="Professional Qualifications" onChange={(e) => setProfessionalQualifications(e.target.value)}></textarea>
               {error ? <div className="error-container">*{error}</div> : <></>}
               <div className="btn-container">
-                <div className="submit btn" onClick={(e) => onSubmitClick(e)}>
-                  Submit
+                <div className="submit btn" onClick={(e) => (!loading ? onSubmitClick(e) : "")}>
+                  {loading ? <Lottie options={lottieOptions} width={50} height={30} /> : "Submit"}
                 </div>
-                <button type="reset" className="reset btn" onClick={() => onResetClick()}>
+                <button type="reset" id="reset-btn" className="reset btn" onClick={() => onResetClick()}>
                   Reset
                 </button>
               </div>
