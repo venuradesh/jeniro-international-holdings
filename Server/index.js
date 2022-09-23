@@ -3,10 +3,14 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { collection, addDoc, getDocs, getDoc, doc, query, where } from "firebase/firestore";
 import db from "./firebase-config.js";
+import path from "path";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static("../build"));
+// }
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
