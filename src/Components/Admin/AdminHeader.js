@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 //images
 import User from "../../assets/user.png";
 
+// const API_URL = 'http://localhost:5000'
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+
 function AdminHeader() {
   const navigate = useNavigate();
   const [adminId, setAdminId] = useState("");
@@ -16,7 +19,7 @@ function AdminHeader() {
     if (localStorage.getItem("user")) {
       setAdminId(localStorage.getItem("user"));
       axios
-        .get("https://jeniro-international-holdings.herokuapp.com/getUser", {
+        .get(`${API_URL}/getUser`, {
           headers: {
             userid: localStorage.getItem("user"),
           },

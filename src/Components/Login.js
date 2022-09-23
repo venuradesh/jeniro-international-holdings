@@ -13,8 +13,8 @@ import Close from "../assets/close.png";
 //components
 import InputFeild from "./InputFeild";
 
-const LocalHostAPI = "http://localhost:5000";
-// const herokuAPI = "https://jeniro-international-holdings.herokuapp.com";
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function Login({ loginClick }) {
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ function Login({ loginClick }) {
     setLoading(true);
     if (email && password && nic) {
       axios
-        .get(`${LocalHostAPI}/login`, {
+        .get(`${API_URL}/login`, {
           headers: {
             email: email,
             password: password,
@@ -103,12 +103,7 @@ function Login({ loginClick }) {
         {err ? <div className="error-container">*{err}</div> : <></>}
         <div className="btn-container">
           <div className="forgot-password">Forgot password</div>
-          <div
-            className="submit"
-            onClick={() => {
-              !loading ? onSubmitClick() : "";
-            }}
-          >
+          <div className="submit" onClick={() => (!loading ? onSubmitClick() : "")}>
             {loading ? <Lottie options={lottieOptions} width={60} height={30} /> : "Submit"}
           </div>
         </div>
