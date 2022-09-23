@@ -23,9 +23,11 @@ app.post("/register", async (req, res) => {
     const reference = await getDocs(collection(db, "users"));
     reference.docs.map((doc) => {
       if (req.body.email === doc.data().email) {
-        throw { message: "Email already exists! use a different email", emailError: true, phoneError: false };
+        throw { message: "Email already exists! use a different email", emailError: true, phoneError: false, nicError: false };
       } else if (req.body.phone === doc.data().phone) {
-        throw { message: "Phone number already exists. Use a unique Phone number", emailError: false, phoneError: true };
+        throw { message: "Phone number already exists. Use a unique Phone number", emailError: false, phoneError: true, nicError: false };
+      } else if (req.body.nic === doc.data().nic) {
+        throw { message: "NIC no already Exists, Check the number again", emailError: false, phoneError: false, nicError: true };
       }
     });
 
@@ -36,6 +38,7 @@ app.post("/register", async (req, res) => {
       address: req.body.address,
       email: req.body.email,
       phone: req.body.phone,
+      nic: req.body.nic,
       jobTypes: req.body.jobTypes,
       education: req.body.qualifications,
       professionalQualifications: req.body.professionalQualifications,
@@ -73,10 +76,10 @@ app.get("/login", async (req, res) => {
       throw { access: "denied", message: "Email doesn't exists", passwordError: false, emailError: true };
     } else {
       querySnapShot.docs.map((doc) => {
-        if (doc.data().password === req.headers.password) {
+        if (doc.data().password === req.headers.password && doc.data().nic === req.headers.nic) {
           res.status(200).send({ access: "granted", userId: doc.id, admin: doc.data().admin });
         } else {
-          throw { access: "denied", message: "Password not matched with email", passwordError: true, emailError: false };
+          throw { access: "denied", message: "Password or NIC not matched with the email", passwordError: true, emailError: false };
         }
       });
     }

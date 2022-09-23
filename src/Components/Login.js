@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Lottie from "react-lottie";
+import * as AnimationData from "../assets/Lotties/submit-loading.json";
 
 //images
 import Cover from "../assets/wallpaper2.jpg";
@@ -11,48 +13,71 @@ import Close from "../assets/close.png";
 //components
 import InputFeild from "./InputFeild";
 
+const LocalHostAPI = "http://localhost:5000";
+// const herokuAPI = "https://jeniro-international-holdings.herokuapp.com";
+
 function Login({ loginClick }) {
   const navigate = useNavigate();
   const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [nic, setNIC] = useState("");
+
+  const lottieOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: AnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   const onSubmitClick = () => {
-    axios
-      .get("https://jeniro-international-holdings.herokuapp.com/login", {
-        headers: {
-          email: email,
-          password: password,
-        },
-      })
-      .then((result) => {
-        if (result.data.access === "granted") {
-          setEmailError(false);
-          setPasswordError(false);
-          localStorage.setItem("user", result.data.userId);
-          loginClick(false);
-          if (result.data.admin === true) {
-            navigate("/admin");
-            localStorage.setItem("adminLogged", true);
-          } else {
-            navigate("/");
-          }
-          window.location.reload();
-        }
-      })
-      .catch((err) => {
-        if (err.response.data.access === "denied") {
-          if (err.response.data.emailError) {
-            setEmailError(true);
-          } else if (err.response.data.passwordError) {
+    setLoading(true);
+    if (email && password && nic) {
+      axios
+        .get(`${LocalHostAPI}/login`, {
+          headers: {
+            email: email,
+            password: password,
+            nic: nic,
+          },
+        })
+        .then((result) => {
+          if (result.data.access === "granted") {
             setEmailError(false);
-            setPasswordError(true);
+            setPasswordError(false);
+            localStorage.setItem("user", result.data.userId);
+            loginClick(false);
+            if (result.data.admin === true) {
+              navigate("/admin");
+              localStorage.setItem("adminLogged", true);
+            } else {
+              navigate("/");
+            }
+            setLoading(false);
+            window.location.reload();
           }
-        }
-        setErr(err.response.data.message);
-      });
+        })
+        .catch((err) => {
+          if (err.response.data.access === "denied") {
+            if (err.response.data.emailError) {
+              setEmailError(true);
+            } else if (err.response.data.passwordError) {
+              setEmailError(false);
+              setPasswordError(true);
+            }
+          }
+          setLoading(false);
+          setErr(err.response.data.message);
+        });
+    } else {
+      setErr("One or more fields missing");
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,6 +98,7 @@ function Login({ loginClick }) {
         <div className="input-items-container">
           <InputFeild type="email" content="Email" id="email" onChange={(e) => setEmail(e.target.value)} error={emailError} />
           <InputFeild type="password" content="Password" id="password" onChange={(e) => setPassword(e.target.value)} error={passwordError} />
+          <InputFeild type="NIC" content="NIC No" id="nic" onChange={(e) => setNIC(e.target.value)} error={passwordError} />
         </div>
         {err ? <div className="error-container">*{err}</div> : <></>}
         <div className="btn-container">
@@ -80,10 +106,10 @@ function Login({ loginClick }) {
           <div
             className="submit"
             onClick={() => {
-              onSubmitClick();
+              !loading ? onSubmitClick() : "";
             }}
           >
-            Submit
+            {loading ? <Lottie options={lottieOptions} width={60} height={30} /> : "Submit"}
           </div>
         </div>
         <div className="create-acc">create an account</div>

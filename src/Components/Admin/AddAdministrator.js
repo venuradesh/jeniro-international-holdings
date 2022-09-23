@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import Lottie from "react-lottie";
+import * as animationData from "../../assets/Lotties/submit-loading.json";
 
 //components
 import InputFeild from "../InputFeild";
@@ -8,9 +10,11 @@ import InputFeild from "../InputFeild";
 //images
 import Done from "../../assets/checked.png";
 
-const API_URL = "https://jeniro-international-holdings.herokuapp.com/admin-registration";
+const LocalHostAPI = "http://localhost:5000";
+// const herokuAPI = 'https://jeniro-international-holdings.herokuapp.com'
 
 function AddAdministrator() {
+  const [loading, setLoading] = useState(false);
   const [userAdded, setUserAdded] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
@@ -22,18 +26,29 @@ function AddAdministrator() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [position, setPosition] = useState("");
+  const [nic, setNIC] = useState("");
+
+  const lottieOptions = {
+    loop: true,
+    autoplay: true,
+    animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   const onSubmitClick = (e) => {
     e.preventDefault();
-
-    if (firstName && lastName && address && phone && email && password && position) {
+    setLoading(true);
+    if (firstName && nic && lastName && address && phone && email && password && position) {
       axios
-        .post(API_URL, {
+        .post(`${LocalHostAPI}/admin-registration`, {
           firstName,
           lastName,
           address,
           phone,
           email,
+          nic,
           password,
           position,
         })
@@ -41,6 +56,7 @@ function AddAdministrator() {
           if (result.data.message === "done") {
             localStorage.setItem("user", result.data.userId);
             setUserAdded(true);
+            setLoading(false);
             document.getElementById("reset-btn").click();
             setTimeout(() => {
               setUserAdded(false);
@@ -49,6 +65,7 @@ function AddAdministrator() {
         })
         .catch((err) => {
           if (err.response.status >= 400) {
+            setLoading(false);
             setError(err.response.data.message);
             setEmailError(err.response.data.emailError);
             setPhoneError(err.response.data.phoneError);
@@ -56,6 +73,7 @@ function AddAdministrator() {
         });
     } else {
       setError("One or more Fields missing");
+      setLoading(false);
     }
   };
 
@@ -70,6 +88,7 @@ function AddAdministrator() {
     setEmail("");
     setPassword("");
     setPosition("");
+    setLoading(false);
   };
 
   return (
@@ -85,14 +104,15 @@ function AddAdministrator() {
           <InputFeild type="tel" content="Contact Number" id="admin-phone" error={phoneError} onChange={(e) => setPhone(e.target.value)} />
         </div>
         <div className="email-password-container half-container">
+          <InputFeild type="text" content="NIC no" id="admin-nic" onChange={(e) => setNIC(e.target.value)} />
           <InputFeild type="email" content="Email" id="admin-email" error={emailError} onChange={(e) => setEmail(e.target.value)} />
           <InputFeild type="password" content="Password" id="admin-password" onChange={(e) => setPassword(e.target.value)} />
         </div>
         <InputFeild type="text" content="Job Position" id="job-position" onChange={(e) => setPosition(e.target.value)} />
         {err ? <div className="error-container">*{err}</div> : <></>}
         <div className="btn-container">
-          <button type="submit" className="submit btn" onClick={(e) => onSubmitClick(e)}>
-            Submit
+          <button type="submit" className="submit btn" onClick={(e) => (!loading ? onSubmitClick(e) : "")}>
+            {loading ? <Lottie options={lottieOptions} width={50} height={30} /> : "Submit"}
           </button>
           <button type="reset" id="reset-btn" className="reset btn" onClick={() => onResetClick()}>
             Reset

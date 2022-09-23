@@ -8,6 +8,9 @@ import Logo from "../assets/logo.png";
 import Login from "../assets/login.png";
 import User from "../assets/user.png";
 
+const LocalHostAPI = "http://localhost:5000";
+// const herokuAPI = 'https://jeniro-international-holdings.herokuapp.com'
+
 function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, registerPage = false }) {
   const navigate = useNavigate();
   const [hamburgerClicked, setHamburgerClicked] = useState(false);
@@ -19,7 +22,7 @@ function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, regi
   useEffect(() => {
     if (localStorage.getItem("user")) {
       axios
-        .get("https://jeniro-international-holdings.herokuapp.com/getUser", {
+        .get(`${LocalHostAPI}/getUser`, {
           headers: {
             userId: localStorage.getItem("user"),
           },
