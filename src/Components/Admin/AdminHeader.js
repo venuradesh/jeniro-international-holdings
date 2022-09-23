@@ -16,7 +16,7 @@ function AdminHeader() {
     if (localStorage.getItem("user")) {
       setAdminId(localStorage.getItem("user"));
       axios
-        .get("http://localhost:5000/getUser", {
+        .get("https://jeniro-international-holdings.herokuapp.com/getUser", {
           headers: {
             userid: localStorage.getItem("user"),
           },

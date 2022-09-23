@@ -19,7 +19,7 @@ function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, regi
   useEffect(() => {
     if (localStorage.getItem("user")) {
       axios
-        .get("http://localhost:5000/getUser", {
+        .get("https://jeniro-international-holdings.herokuapp.com/getUser", {
           headers: {
             userId: localStorage.getItem("user"),
           },

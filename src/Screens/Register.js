@@ -14,7 +14,7 @@ import InputFeild from "../Components/InputFeild";
 import Wallpaper from "../assets/wallpaper3.jpg";
 import Logo from "../assets/logo.png";
 
-const API_URL = "http://localhost:5000/register";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com/register";
 
 function Register() {
   const navigate = useNavigate();

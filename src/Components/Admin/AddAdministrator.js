@@ -8,7 +8,7 @@ import InputFeild from "../InputFeild";
 //images
 import Done from "../../assets/checked.png";
 
-const API_URL = "http://localhost:5000/admin-registration";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com/admin-registration";
 
 function AddAdministrator() {
   const [userAdded, setUserAdded] = useState(false);
