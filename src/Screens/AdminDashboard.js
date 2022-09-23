@@ -10,7 +10,7 @@ import PanelTile from "../Components/Admin/PanelTile";
 import Slide from "../assets/slide.png";
 
 function AdminDashboard() {
-  const panelTitles = ["Home", "Users", "Add job", "Show Jobs", "Add News", "Show news", "Settings"];
+  const panelTitles = ["Home", "Users", "Add job", "Show Jobs", "Add News", "Show news", "Add Administrator", "Settings"];
   const [tileClicked, setTileClicked] = useState("Home");
   const [leftPanelClicked, setLeftPanelClicked] = useState(false);
 

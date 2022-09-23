@@ -33,7 +33,12 @@ function Login({ loginClick }) {
           setPasswordError(false);
           localStorage.setItem("user", result.data.userId);
           loginClick(false);
-          navigate("/");
+          if (result.data.admin === true) {
+            navigate("/admin");
+            localStorage.setItem("adminLogged", true);
+          } else {
+            navigate("/");
+          }
           window.location.reload();
         }
       })
