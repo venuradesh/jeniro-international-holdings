@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/css/main.46235bc6.css",
+    "main.js": "/static/js/main.1e1171af.js",
+    "static/media/wallpaper2.jpg": "/static/media/wallpaper2.0602356eeeb385a1303b.jpg",
+    "static/media/admin-cover.jpg": "/static/media/admin-cover.d3fd277c436dc3c92fff.jpg",
+    "static/media/wallpaper3.jpg": "/static/media/wallpaper3.9318e50c00d9c55fd77d.jpg",
+    "static/media/wallpaper1.jpg": "/static/media/wallpaper1.9e3a8314fca577daca0a.jpg",
+    "static/media/company-logo.jpg": "/static/media/company-logo.b74b890af3a395730dbb.jpg",
+    "static/media/logo-black.png": "/static/media/logo-black.ee59ee93f45257385715.png",
+    "static/media/twitter.png": "/static/media/twitter.cab83ccd370ee72a27b2.png",
+    "static/media/instagram.png": "/static/media/instagram.e719d8b29f452a16302d.png",
+    "static/media/about-us.png": "/static/media/about-us.4d2646fec18627812c7d.png",
+    "static/media/contact.png": "/static/media/contact.3c1ab48708a59ef568d1.png",
+    "static/media/location.png": "/static/media/location.b2a3aee116e1727ac769.png",
+    "static/media/time.png": "/static/media/time.40e203559df3bce1a483.png",
+    "index.html": "/index.html",
+    "main.46235bc6.css.map": "/static/css/main.46235bc6.css.map",
+    "main.1e1171af.js.map": "/static/js/main.1e1171af.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.46235bc6.css",
+    "static/js/main.1e1171af.js"
+  ]
+}

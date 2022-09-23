@@ -21,7 +21,7 @@ function Login({ loginClick }) {
 
   const onSubmitClick = () => {
     axios
-      .get("http://localhost:5000/login", {
+      .get("https://jeniro-international-holdings.herokuapp.com/login", {
         headers: {
           email: email,
           password: password,
