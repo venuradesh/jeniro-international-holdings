@@ -38,18 +38,18 @@ function LandingPage() {
           <div className="input-field-container">
             <input placeholder="Job Title" type="text" name="keyword" id="job-title" className="job-title" />
             <div className={`select ${jobTypeClicked ? "active" : ""}`} onClick={() => (!jobTypeClicked ? setJobTypeClicked(true) : setJobTypeClicked(false))}>
-              <select name="job-type" id="job-type" className="job-type">
-                <option value="none" hidden selected className="select-item">
+              <select name="job-type" id="job-type" className="job-type" defaultValue={"none"}>
+                <option value="none" hidden className="select-item">
                   Job Type
                 </option>
                 <option value="Nursing" className="select-item">
-                  <div className="content">Nursing</div>
+                  Nursing
                 </option>
                 <option value="Engineering" className="select-item">
-                  <div className="content">Engineering</div>
+                  Engineering
                 </option>
                 <option value="Doctor" className="select-item">
-                  <div className="content">Doctor</div>
+                  Doctor
                 </option>
               </select>
             </div>

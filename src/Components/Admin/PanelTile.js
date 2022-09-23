@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 function PanelTile({ title, onClick, className }) {
   const navigate = useNavigate();
-  const [tileClicked, setTileClicked] = useState(false);
 
   return (
     <Container

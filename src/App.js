@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
@@ -14,25 +14,52 @@ import AddJobs from "./Components/Admin/AddJobs";
 import ShowJobs from "./Components/Admin/ShowJobs";
 import AddNews from "./Components/Admin/AddNews";
 import ShowNews from "./Components/Admin/ShowNews";
+import AddAdministrator from "./Components/Admin/AddAdministrator";
 
 const App = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [adminLogged, setAdminLogged] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(true);
+    setAdminLogged(localStorage.getItem("adminLogged"));
+  }, []);
+
   return (
     <Router>
-      <Container id="container">
-        <Routes>
-          <Route exact path="/" element={<LandingPage />} />
-          <Route exact path="/register" element={<Register />} />
-          <Route exact path="/admin" element={<AdminDashboard />}>
-            <Route index element={<AdminHome />} />
-            <Route path="users" element={<Users />} />
-            <Route path="addjob" element={<AddJobs />} />
-            <Route path="showjobs" element={<ShowJobs />} />
-            <Route path="addnews" element={<AddNews />} />
-            <Route path="shownews" element={<ShowNews />} />
-          </Route>
-          <Route exact path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </Container>
+      {isLoaded ? (
+        <Container id="container">
+          <Routes>
+            {adminLogged ? (
+              <>
+                <Route exact path="/admin" element={<AdminDashboard />}>
+                  <Route index element={<AdminHome />} />
+                  <Route path="users" element={<Users />} />
+                  <Route path="addjob" element={<AddJobs />} />
+                  <Route path="showjobs" element={<ShowJobs />} />
+                  <Route path="addnews" element={<AddNews />} />
+                  <Route path="shownews" element={<ShowNews />} />
+                  <Route path="addadministrator" element={<AddAdministrator />} />
+                </Route>
+                <Route exact path="*" element={<Navigate to="/admin" />} />
+              </>
+            ) : (
+              <></>
+            )}
+            {!adminLogged ? (
+              <>
+                <Route exact path="/" element={<LandingPage />} />
+                <Route exact path="/register" element={<Register />} />
+                <Route exact path="*" element={<Navigate to="/" />} />
+              </>
+            ) : (
+              <></>
+            )}
+          </Routes>
+        </Container>
+      ) : (
+        <div>Loading</div>
+      )}
     </Router>
   );
 };

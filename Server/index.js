@@ -43,7 +43,6 @@ app.post("/register", async (req, res) => {
     console.log(docRef.id);
     res.status(201).send({ message: "done", userId: docRef.id });
   } catch (e) {
-    console.error("Error adding document: ", e);
     res.status(409).send(e);
   }
 });
@@ -73,7 +72,7 @@ app.get("/login", async (req, res) => {
     } else {
       querySnapShot.docs.map((doc) => {
         if (doc.data().password === req.headers.password) {
-          res.status(200).send({ access: "granted", userId: doc.id });
+          res.status(200).send({ access: "granted", userId: doc.id, admin: doc.data().admin });
         } else {
           throw { access: "denied", message: "Password not matched with email", passwordError: true, emailError: false };
         }
@@ -81,5 +80,33 @@ app.get("/login", async (req, res) => {
     }
   } catch (error) {
     res.status(404).send(error);
+  }
+});
+
+app.post("/admin-registration", async (req, res) => {
+  try {
+    const reference = await getDocs(collection(db, "users"));
+    reference.docs.map((doc) => {
+      if (req.body.email === doc.data().email) {
+        throw { message: "Email already exists", emailError: true, phoneError: false };
+      } else if (req.body.phone === doc.data().phone) {
+        throw { message: "Phone number already exists", emailError: false, phoneError: true };
+      }
+    });
+
+    const newDocument = await addDoc(collection(db, "users"), {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      address: req.body.address,
+      phone: req.body.phone,
+      email: req.body.email,
+      password: req.body.password,
+      position: req.body.position,
+      admin: true,
+    });
+
+    res.status(201).send({ message: "done", userId: newDocument.id });
+  } catch (error) {
+    res.status(409).send(error);
   }
 });

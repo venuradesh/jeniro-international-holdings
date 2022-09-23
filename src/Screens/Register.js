@@ -86,6 +86,15 @@ function Register() {
     setEmailError(false);
     setPhoneError(false);
     setError(false);
+    setFirstName("");
+    setLastName("");
+    setAddress("");
+    setEmail("");
+    setPhone("");
+    setJobTypes("");
+    setPassword("");
+    setQualifications("");
+    setProfessionalQualifications("");
   };
 
   return (
@@ -94,7 +103,7 @@ function Register() {
       {aboutUsClicked || contactClicked || loginClicked ? (
         <div className="container-wrapper">
           <div className="blured-background">
-            <img src={Logo} alt="logo-image" />
+            <img src={Logo} alt="company-logo" />
           </div>
           <div className="login-container">{loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact contactClick={setContactClicked} /> : aboutUsClicked ? <AboutUs aboutUsClick={setAboutUsClicked} /> : <></>}</div>
         </div>
@@ -105,7 +114,7 @@ function Register() {
       <RegisterContainer>
         <div className="brand">
           <div className="brand-logo">
-            <img src={Logo} alt="logo-image" />
+            <img src={Logo} alt="company-logo" />
           </div>
           <div className="brand-name">Jeniro International Holding Pvt Ltd</div>
         </div>
