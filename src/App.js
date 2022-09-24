@@ -15,6 +15,7 @@ import ShowJobs from "./Components/Admin/ShowJobs";
 import AddNews from "./Components/Admin/AddNews";
 import ShowNews from "./Components/Admin/ShowNews";
 import AddAdministrator from "./Components/Admin/AddAdministrator";
+import NewsSection from "./Screens/NewsSection";
 
 const App = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -52,6 +53,7 @@ const App = () => {
               <>
                 <Route exact path="/" element={<LandingPage />} />
                 <Route exact path="/register" element={<Register />} />
+                <Route exact path="/news" element={<NewsSection />} />
                 <Route exact path="*" element={<Navigate to="/" />} />
               </>
             ) : (
