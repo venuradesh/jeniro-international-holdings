@@ -121,7 +121,9 @@ function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, regi
           <div className="item" onClick={() => navigate("/")}>
             Home
           </div>
-          <div className="item">News</div>
+          <div className="item" onClick={() => navigate("/news")}>
+            News
+          </div>
           <div
             className="item"
             onClick={() => {
