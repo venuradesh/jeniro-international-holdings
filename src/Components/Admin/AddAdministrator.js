@@ -60,7 +60,7 @@ function AddAdministrator() {
             document.getElementById("reset-btn").click();
             setTimeout(() => {
               setUserAdded(false);
-            }, 3000);
+            }, 2000);
           }
         })
         .catch((err) => {
@@ -208,7 +208,7 @@ const Container = styled.div`
 
       @keyframes zoomInOut {
         0% {
-          transform: scale(0.8);
+          transform: scale(0.98);
         }
 
         100% {

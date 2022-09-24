@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 
-function InputFeild({ type, content, id, onChange, error = false }) {
+function InputFeild({ type, content, id, onChange, onInput, error = false, maxlength }) {
   return (
-    <Container onChange={onChange}>
-      <input type={type} id={id} name={id} className={`${type} input`} autoComplete="off" required />
+    <Container onChange={onChange} onInput={onInput}>
+      <input type={type} id={id} name={id} className={`${type} input`} autoComplete="off" required maxLength={maxlength} />
       <label htmlFor={id} className={`label-container ${error ? "error" : ""}`}>
         <span className={`label-content ${error ? "error" : ""}`}>{content}</span>
       </label>
