@@ -1,19 +1,43 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 //component
 import NewsCard from "../NewsCard";
 
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+
 function ShowNews() {
+  const [newsArray, setNewsArray] = useState([]);
+  const [loadComponentAgain, setLoadComponentAgain] = useState(false);
+
+  useEffect(() => {
+    setLoadComponentAgain(false);
+    console.log("print");
+    axios
+      .get(`${API_URL}/get-news`)
+      .then((res) => {
+        setNewsArray(res.data.result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [loadComponentAgain]);
+
   return (
     <Container>
       <div className="title">Available News</div>
       <div className="news-container">
-        <NewsCard admin={true} />
-        <NewsCard admin={true} />
-        <NewsCard admin={true} />
-        <NewsCard admin={true} />
-        <NewsCard admin={true} />
+        {newsArray.length > 0 ? (
+          <>
+            {newsArray.map((news) => (
+              <NewsCard admin={true} data={news} key={news.id} newsId={news.id} loadComponent={setLoadComponentAgain} />
+            ))}
+          </>
+        ) : (
+          <>{newsArray.length === 0 ? <div className="not-available">No news Available</div> : <></>}</>
+        )}
       </div>
     </Container>
   );

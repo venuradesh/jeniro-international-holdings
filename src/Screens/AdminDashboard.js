@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
 
@@ -13,6 +13,14 @@ function AdminDashboard() {
   const panelTitles = ["Home", "Users", "Add job", "Show Jobs", "Add News", "Show news", "Add Administrator", "Settings"];
   const [tileClicked, setTileClicked] = useState("Home");
   const [leftPanelClicked, setLeftPanelClicked] = useState(false);
+
+  useEffect(() => {
+    window.onload = () => {
+      if (window.location.pathname !== "/admin") {
+        window.location.replace("/admin");
+      }
+    };
+  });
 
   return (
     <Container>

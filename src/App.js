@@ -19,10 +19,12 @@ import AddAdministrator from "./Components/Admin/AddAdministrator";
 const App = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [adminLogged, setAdminLogged] = useState(false);
+  const [user, setUser] = useState("");
 
   useEffect(() => {
     setIsLoaded(true);
     setAdminLogged(localStorage.getItem("adminLogged"));
+    setUser(localStorage.getItem("user"));
   }, []);
 
   return (
@@ -30,7 +32,7 @@ const App = () => {
       {isLoaded ? (
         <Container id="container">
           <Routes>
-            {adminLogged ? (
+            {adminLogged && user ? (
               <>
                 <Route exact path="/admin" element={<AdminDashboard />}>
                   <Route index element={<AdminHome />} />
