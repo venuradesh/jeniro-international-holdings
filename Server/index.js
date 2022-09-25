@@ -146,7 +146,6 @@ app.post("/addnews", async (req, res) => {
         }
       })
       .catch((err) => {
-        console.log(err);
         res.status(409).send("Error when uploading the image, try again");
       });
   } else {
@@ -200,5 +199,86 @@ app.delete("/delete-news", async (req, res) => {
     res.status(200).send({ message: "done" });
   } catch (error) {
     res.status(409).send({ message: "error occured", error });
+  }
+});
+
+/* *********************************************************************** */
+/* *********************************************************************** */
+/* Job Section */
+
+//adding job
+app.post("/addjob", (req, res) => {
+  const logoName = `companyLogos/jeniro_jobs_${Date.now()}_${req.files.companyLogo.name}`;
+
+  try {
+    const storage = getStorage();
+    const storageRef = ref(storage, logoName);
+    uploadBytesResumable(storageRef, req.files.companyLogo.data, {
+      contentType: req.files.companyLogo.mimetype,
+    }).then((uploadStatus) => {
+      if (uploadStatus.state === "success") {
+        getDownloadURL(storageRef).then(async (url) => {
+          const docRef = await addDoc(collection(db, "jobs"), {
+            companyName: req.body.companyName,
+            workLocation: req.body.workLocation,
+            comapnyOverview: req.body.companyOverview,
+            companyEmail: req.body.companyEmail,
+            companyPhone: req.body.companyPhone,
+            jobTitle: req.body.jobTitle,
+            jobType: req.body.jobType,
+            applicationDeadline: req.body.applicationDeadline,
+            salary: req.body.salary,
+            experience: req.body.experience,
+            jobOverview: req.body.jobOverview,
+            responsibilities: req.body.jobRes,
+            requirements: req.body.jobReq,
+            jobCreatedBy: req.body.jobCreateBy,
+            logoPath: uploadStatus.metadata.fullPath,
+            companyLogo: url,
+            createdOn: Date.now(),
+          });
+
+          res.status(201).send({ message: "successully added the job", docRef: docRef.id, error: false });
+        });
+      } else {
+        throw { message: "Error occured while uploading the logo, Try again", error: true };
+      }
+    });
+  } catch (error) {
+    res.status(409).send(error);
+  }
+});
+
+//getting jobs
+app.get("/getJobs", async (req, res) => {
+  const jobs = [];
+  try {
+    const snapDocs = await getDocs(query(collection(db, "jobs"), orderBy("createdOn", "desc")));
+    snapDocs.docs.map((document) => {
+      jobs.push({ jobDetails: document.data(), id: document.id });
+    });
+    res.status(200).send({ jobs: jobs, error: false });
+  } catch (error) {
+    res.status(400).send({ message: "Error occured while fetching the Jobs", error: true });
+  }
+});
+
+//delete job
+app.delete("/deleteJob", async (req, res) => {
+  const jobid = req.headers.jobid;
+  const logoPath = req.headers.filepath;
+
+  try {
+    const storage = getStorage();
+    const file = ref(storage, logoPath);
+    deleteObject(file).then(() => {
+      // console.log("file deleted");
+    });
+
+    const resultingDoc = doc(db, "jobs", jobid);
+    await deleteDoc(resultingDoc);
+    res.status(202).send({ message: "successfully deleted", error: false });
+  } catch (error) {
+    res.status(409).send({ message: "conflict occurs", error: true });
   }
 });
