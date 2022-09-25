@@ -14,7 +14,6 @@ function ShowNews() {
 
   useEffect(() => {
     setLoadComponentAgain(false);
-    console.log("print");
     axios
       .get(`${API_URL}/get-news`)
       .then((res) => {

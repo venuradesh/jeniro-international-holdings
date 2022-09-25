@@ -1,4 +1,5 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 //images
@@ -6,33 +7,92 @@ import CompanyLogo from "../assets/company-logo.jpg";
 import Location from "../assets/location.png";
 import Time from "../assets/time.png";
 
-function JobTile({ admin = false }) {
+const API_URL = "http://localhost:5000";
+// const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+
+function JobTile({ admin = false, jobDetails, id, componentRerender }) {
+  const [deleteClicked, setDeleteClicked] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    console.log(jobDetails);
+  });
+
+  const onDeleteBtnClick = () => {
+    axios
+      .delete(`${API_URL}/deleteJob`, {
+        headers: {
+          jobid: id,
+          filepath: jobDetails.logoPath,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        if (!response.data.error) {
+          setDeleteClicked(false);
+          componentRerender(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
-    <Container>
+    <Container cover={jobDetails.companyLogo}>
       <div className="job-overview">
         <div className="company-logo"></div>
         <div className="content-container">
           <div className="job-title">
-            Software Developer <span className="dash">-</span>
-            <span> Toyota New Zealand</span>
+            {jobDetails.jobTitle} <span className="dash">-</span>
+            <span> {jobDetails.companyName}</span>
           </div>
-          <div className="job-desc">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis hic modi animi dolore, autem enim sequi excepturi recusandae unde cum rem harum aliquid laudantium, error necessitatibus, suscipit inventore ipsam placeat.</div>
+          <div className="job-desc">{jobDetails.jobOverview}</div>
           <div className="items">
             <div className="location item">
               <img src={Location} alt="location" />
-              Colombo, Sri Lanka
+              {jobDetails.workLocation}
             </div>
             <div className="time item">
               <img src={Time} alt="expiring time" />
-              Expires on 2022-11-02
+              Expires on {jobDetails.applicationDeadline}
             </div>
           </div>
         </div>
       </div>
       <div className="btn-container">
         <div className="view-btn btn">View Job</div>
-        {!admin ? <div className="apply-btn btn">Apply Now</div> : <div className="delete-btn btn">Delete Job</div>}
+        {!admin ? (
+          <div className="apply-btn btn">Apply Now</div>
+        ) : (
+          <div
+            className="delete-btn btn"
+            onClick={() => {
+              setDeleteClicked(true);
+            }}
+          >
+            Delete Job
+          </div>
+        )}
       </div>
+      {deleteClicked ? (
+        <DeleteConfirmation>
+          <div className="delete-container">
+            <div className="content">Do you want really to Delete this Job? (You cannot recover it later)</div>
+            <div className="btn-container-on-delete">
+              <div className="btn yes" onClick={() => onDeleteBtnClick()}>
+                {" "}
+                Yes
+              </div>
+              <div className="btn no" onClick={() => setDeleteClicked(false)}>
+                No
+              </div>
+            </div>
+          </div>
+        </DeleteConfirmation>
+      ) : (
+        <></>
+      )}
     </Container>
   );
 }
@@ -50,6 +110,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   column-gap: 20px;
+  position: relative;
 
   .job-overview {
     width: 100%;
@@ -62,7 +123,7 @@ const Container = styled.div`
     .company-logo {
       width: 150px;
       height: 100px;
-      background-image: url(${CompanyLogo});
+      background-image: url(${(props) => props.cover});
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -92,22 +153,21 @@ const Container = styled.div`
       }
 
       .job-desc {
-        width: 600px;
-        height: 20px;
+        width: 100%;
+        max-width: 90%;
+        height: 40px;
         display: flex;
-        align-items: center;
-        white-space: nowrap;
+        align-items: flex-start;
         overflow: hidden;
-        text-overflow: ellipsis;
         font-size: var(--ex-small);
         color: var(--btn-color-alt);
 
         @media only screen and (max-width: 1430px) {
-          width: 400px;
+          /* width: 400px; */
         }
 
         @media only screen and (max-width: 1140px) {
-          width: 300px;
+          /* width: 300px; */
         }
       }
 
@@ -212,6 +272,7 @@ const Container = styled.div`
 
         .job-desc {
           display: block;
+          height: 20px;
         }
 
         .items {
@@ -270,6 +331,73 @@ const Container = styled.div`
             img {
               width: 10px;
             }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const DeleteConfirmation = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .delete-container {
+    width: 45%;
+    height: 70%;
+    background-color: var(--theme1);
+    min-width: 250px;
+    border-radius: 12px;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .content {
+      font-size: var(--small);
+      color: var(--white);
+      font-weight: var(--font-w-500);
+      text-align: center;
+    }
+
+    .btn-container-on-delete {
+      display: flex;
+      width: 100%;
+      column-gap: 20px;
+      margin-top: 15px;
+
+      .btn {
+        flex: 1;
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: var(--small);
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &.yes {
+          background-color: var(--btn-color);
+
+          &:hover {
+            background-color: var(--btn-color-alt);
+          }
+        }
+
+        &.no {
+          background-color: var(--btn-red);
+
+          &:hover {
+            background-color: var(--btn-red-alt);
           }
         }
       }
