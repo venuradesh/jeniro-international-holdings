@@ -1,10 +1,73 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import styled from "styled-components";
+import Lottie from "react-lottie";
+import * as animationData from "../../assets/Lotties/submit-loading.json";
 
 //images
 import User from "../../assets/user.png";
 
-function UserTile() {
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+
+function UserTile({ userData, id, componentRerender }) {
+  const [selectionClicked, setSelectionClicked] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [deleteClicked, setDeleteClicked] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const lottieOptions = {
+    loop: true,
+    autoplay: true,
+    animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+    isClickToPauseDisabled: true,
+  };
+
+  const onUpdateClick = () => {
+    setLoading(true);
+    if (selectedStatus !== userData.status) {
+      axios
+        .put(`${API_URL}/updateStatus`, {
+          status: selectedStatus,
+          id: id,
+        })
+        .then((res) => {
+          if (!res.data.error) {
+            setLoading(false);
+            componentRerender({ statusUpdates: true });
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+          console.log(err);
+        });
+    }
+  };
+
+  const onDeleteClick = () => {
+    setDeleteLoading(true);
+
+    axios
+      .delete(`${API_URL}/deleteUser`, {
+        headers: {
+          userid: id,
+        },
+      })
+      .then((res) => {
+        if (!res.data.error) {
+          setDeleteLoading(false);
+          componentRerender({ userDeleted: true });
+        }
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+  };
+
   return (
     <Container>
       <div className="profile-wrapper">
@@ -13,26 +76,72 @@ function UserTile() {
         </div>
         <div className="content-container">
           <div className="name item">
-            <span>Name: </span>Venura Warnasooriya
+            <span>Name: </span>
+            {userData.firstName + " " + userData.lastName}
           </div>
           <div className="email item">
-            <span>Email: </span>venurawarnasooriya@gmail.com
+            <span>Email: </span>
+            {userData.email}
           </div>
           <div className="address item">
-            <span>Address: </span>B-49, Wickrambahu 2nd lane, Gampola
+            <span>Address: </span>
+            {userData.address}
+          </div>
+          <div className="nic item">
+            <span>NIC No: </span>
+            {userData.nic}
           </div>
           <div className="job-types-preffered item">
-            <span>Job types: </span>Full stack Web developer, Full stack Web developer, Fronend Web developer
+            <span>Job types: </span>
+            {userData.jobTypes}
           </div>
-          <div className="job-count item">
-            <span>Applied Job count: </span>3
+          <div className="status item">
+            <span>Status: </span>
+            {userData.status}
           </div>
         </div>
       </div>
       <div className="btn-container">
-        <div className="contact btn">Contact the User</div>
-        <div className="delete btn">Delete the User</div>
+        <a href={`mailto:${userData.email}`} className="contact btn">
+          Contact the User
+        </a>
+        <div className="delete btn" onClick={() => setDeleteClicked(true)}>
+          Delete the User
+        </div>
+        <div className={`selection-status btn ${selectionClicked ? "active" : ""}`} onClick={() => (!selectionClicked ? setSelectionClicked(true) : setSelectionClicked(false))}>
+          <select defaultValue={"none"} onChange={(e) => (e.target.value !== userData.status ? setSelectedStatus(e.target.value) : setSelectedStatus(""))}>
+            <option value="none" hidden disabled>
+              Select Status
+            </option>
+            <option value="Registered">Registered</option>
+            <option value="Paid">Paid</option>
+          </select>
+        </div>
+        {selectedStatus ? (
+          <div className="update-user btn" onClick={() => onUpdateClick()}>
+            {!loading ? "Update the status" : <Lottie options={lottieOptions} width={50} />}
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
+      {deleteClicked ? (
+        <div className="delete-confirmation">
+          <div className="container">
+            <div className="content">Delete the User from Database</div>
+            <div className="btn-container-delete">
+              <div className="btn yes" onClick={() => (!deleteLoading ? onDeleteClick() : "")}>
+                {deleteLoading ? <Lottie options={lottieOptions} width={50} /> : "Yes"}
+              </div>
+              <div className="btn no" onClick={() => setDeleteClicked(false)}>
+                No
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
     </Container>
   );
 }
@@ -51,6 +160,68 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   column-gap: 30px;
+  position: relative;
+
+  .delete-confirmation {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .container {
+      background-color: var(--theme1);
+      width: 45%;
+      min-width: 250px;
+      height: max-content;
+      padding: 20px 20px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 12px;
+
+      .content {
+        color: var(--white);
+        font-size: var(--small);
+      }
+
+      .btn-container-delete {
+        display: flex;
+        margin-top: 10px;
+        column-gap: 10px;
+        width: 100%;
+
+        .btn {
+          width: 100%;
+          background-color: var(--btn-color);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: var(--small);
+          color: var(--white);
+          height: 40px;
+          cursor: pointer;
+
+          &.yes {
+            background-color: var(--btn-red);
+
+            &:hover {
+              background-color: var(--btn-red-alt);
+            }
+          }
+
+          &:hover {
+            background-color: var(--btn-color-alt);
+          }
+        }
+      }
+    }
+  }
 
   .profile-wrapper {
     display: flex;
@@ -101,10 +272,9 @@ const Container = styled.div`
     width: 20%;
     display: flex;
     flex-direction: column;
-    row-gap: 20px;
+    row-gap: 5px;
 
-    .contact,
-    .delete {
+    .btn {
       width: 100%;
       min-width: 150px;
       height: 40px;
@@ -116,9 +286,71 @@ const Container = styled.div`
       font-weight: var(--font-w-700);
       transition: all 0.3s ease;
       cursor: pointer;
+      color: var(--theme1);
+
+      &.delete {
+        background-color: var(--btn-red);
+
+        &:hover {
+          background-color: var(--btn-red-alt);
+        }
+      }
 
       &:hover {
         background-color: var(--btn-color-alt);
+      }
+    }
+
+    .contact {
+      text-decoration: none;
+    }
+
+    .update-user {
+      background-color: var(--btn-red);
+
+      &:hover {
+        background-color: var(--btn-red-alt);
+      }
+    }
+
+    .selection-status {
+      width: 100%;
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        width: 12px;
+        height: 8px;
+        background-color: var(--theme1);
+        clip-path: polygon(0 0, 100% 0, 50% 100%);
+        right: 20px;
+        transition: all 0.3s ease;
+      }
+
+      &.active {
+        &::after {
+          clip-path: polygon(50% 0, 0 100%, 100% 100%);
+        }
+      }
+
+      select {
+        background-color: transparent;
+        width: 100%;
+        height: 100%;
+        border: none;
+        outline: none;
+        text-align: center;
+        position: relative;
+        appearance: none;
+        padding: 0 1em 0 1em;
+        font-size: var(--small);
+        color: var(--theme1);
+        font-weight: var(--font-w-500);
+
+        &::-ms-expand {
+          display: none;
+        }
       }
     }
   }

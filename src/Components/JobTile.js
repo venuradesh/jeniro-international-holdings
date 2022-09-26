@@ -3,19 +3,18 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 //images
-import CompanyLogo from "../assets/company-logo.jpg";
 import Location from "../assets/location.png";
 import Time from "../assets/time.png";
 
-const API_URL = "http://localhost:5000";
-// const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function JobTile({ admin = false, jobDetails, id, componentRerender }) {
   const [deleteClicked, setDeleteClicked] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     console.log(jobDetails);
+    console.log("within");
   });
 
   const onDeleteBtnClick = () => {
@@ -385,7 +384,7 @@ const DeleteConfirmation = styled.div`
         cursor: pointer;
         transition: all 0.3s ease;
 
-        &.yes {
+        &.no {
           background-color: var(--btn-color);
 
           &:hover {
@@ -393,7 +392,7 @@ const DeleteConfirmation = styled.div`
           }
         }
 
-        &.no {
+        &.yes {
           background-color: var(--btn-red);
 
           &:hover {

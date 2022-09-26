@@ -317,7 +317,7 @@ const Container = styled.div`
           cursor: pointer;
           transition: all 0.3s ease;
 
-          &.yes {
+          &.no {
             background-color: var(--btn-color);
 
             &:hover {
@@ -325,7 +325,7 @@ const Container = styled.div`
             }
           }
 
-          &.no {
+          &.yes {
             background-color: var(--btn-red);
 
             &:hover {
