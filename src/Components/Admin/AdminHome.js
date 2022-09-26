@@ -2,6 +2,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
+//components
+import Loading from "../../Screens/Loading";
+
 //images
 import Cover from "../../assets/admin-cover.jpg";
 
@@ -62,7 +65,9 @@ function AdminHome() {
           </div>
         </>
       ) : (
-        <>Loading</>
+        <div className="loading-container">
+          <Loading />
+        </div>
       )}
     </Container>
   );
@@ -75,6 +80,14 @@ const Container = styled.div`
   height: 100%;
   padding: 10px;
   overflow-y: auto;
+
+  .loading-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   .welcome {
     font-size: var(--normal);

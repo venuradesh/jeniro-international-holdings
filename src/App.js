@@ -16,6 +16,7 @@ import AddNews from "./Components/Admin/AddNews";
 import ShowNews from "./Components/Admin/ShowNews";
 import AddAdministrator from "./Components/Admin/AddAdministrator";
 import NewsSection from "./Screens/NewsSection";
+import Profile from "./Screens/Profile";
 
 const App = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -54,6 +55,7 @@ const App = () => {
                 <Route exact path="/" element={<LandingPage />} />
                 <Route exact path="/register" element={<Register />} />
                 <Route exact path="/news" element={<NewsSection />} />
+                {user ? <Route exact path="/profile" element={<Profile />} /> : <></>}
                 <Route exact path="*" element={<Navigate to="/" />} />
               </>
             ) : (

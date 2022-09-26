@@ -1,11 +1,15 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+
+//components
 import AboutUs from "../Components/AboutUs";
 import Contact from "../Components/Contact";
 import Header from "../Components/Header";
 import Login from "../Components/Login";
 import NewsCard from "../Components/NewsCard";
+import ContentNotFound from "./ContentNotFound";
+import Loading from "./Loading";
 
 const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
@@ -15,11 +19,25 @@ function NewsSection() {
   const [aboutUsClicked, setAboutUsClicked] = useState(false);
   const [contactClicked, setContactClicked] = useState(false);
   const [readmoreClicked, setReadMoreClicked] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [contentNotFound, setContentNotFount] = useState(false);
 
   useEffect(() => {
-    axios.get(`${API_URL}/get-news`).then((results) => {
-      setNewsData(results.data.result);
-    });
+    setLoading(true);
+    setContentNotFount(false);
+    axios
+      .get(`${API_URL}/get-news`)
+      .then((results) => {
+        setLoading(false);
+        if (results.data.result.length === 0) {
+          setContentNotFount(true);
+        } else {
+          setNewsData(results.data.result);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   return (
@@ -34,14 +52,20 @@ function NewsSection() {
         <></>
       )}
       <div className={`news-container ${readmoreClicked ? "hide-content" : ""}`}>
-        {newsData.length > 0 ? (
+        {!loading && !contentNotFound ? (
           <>
             {newsData.map((news) => (
               <NewsCard readmore={setReadMoreClicked} data={news} newsId={news.id} key={news.id} admin={false} />
             ))}
           </>
+        ) : contentNotFound ? (
+          <div className="not-found">
+            <ContentNotFound content="News" />
+          </div>
         ) : (
-          <>No News Available</>
+          <div className="loading-container">
+            <Loading />
+          </div>
         )}
       </div>
     </Container>

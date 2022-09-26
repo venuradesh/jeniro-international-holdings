@@ -51,7 +51,7 @@ function NewsCard({ admin, data, newsId, loadComponent, readmore }) {
         .then((res) => {
           setLoading(false);
           if (res.data.message === "done") {
-            loadComponent(true);
+            loadComponent({ render: true });
           }
         })
         .catch((err) => {

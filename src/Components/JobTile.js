@@ -29,7 +29,7 @@ function JobTile({ admin = false, jobDetails, id, componentRerender }) {
         console.log(response);
         if (!response.data.error) {
           setDeleteClicked(false);
-          componentRerender(true);
+          componentRerender({ render: true });
         }
       })
       .catch((err) => {
