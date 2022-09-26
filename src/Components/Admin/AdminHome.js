@@ -10,10 +10,8 @@ const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function AdminHome() {
   const [homeData, setHomeData] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
     axios
       .get(`${API_URL}/homeDetails`, {
         headers: {
@@ -23,18 +21,16 @@ function AdminHome() {
       .then((response) => {
         if (!response.data.error) {
           setHomeData(response.data.result);
-          setLoading(false);
         }
       })
       .catch((err) => {
-        setLoading(false);
         console.log(err);
       });
   }, []);
 
   return (
     <Container>
-      {loading ? (
+      {homeData ? (
         <>
           <div className="welcome">Welcome to Admin Dashboard</div>
           <div className="cover">
