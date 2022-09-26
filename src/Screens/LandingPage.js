@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
 
 //images
 import Wallpaper from "../assets/wallpaper1.jpg";
@@ -8,16 +9,44 @@ import Header from "../Components/Header";
 import AboutUs from "../Components/AboutUs";
 import Contact from "../Components/Contact";
 import Login from "../Components/Login";
+import JobTile from "../Components/JobTile";
+
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function LandingPage() {
   const [jobTypeClicked, setJobTypeClicked] = useState(false);
   const [loginClicked, setLoginClicked] = useState(false);
   const [aboutUsClicked, setAboutUsClicked] = useState(false);
   const [contactClicked, setContactClicked] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      if (window.scrollY >= 70) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    });
+
+    axios
+      .get(`${API_URL}/getJobs`)
+      .then((result) => {
+        if (!result.data.error) {
+          if (result.data.jobs.length === 0) {
+          } else {
+            setResults(result.data.jobs);
+          }
+        }
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   return (
     <Container>
-      <Header loginClick={setLoginClicked} aboutUsClick={setAboutUsClicked} contactClick={setContactClicked} />
+      <Header scrolled={scrolled} loginClick={setLoginClicked} aboutUsClick={setAboutUsClicked} contactClick={setContactClicked} />
       {aboutUsClicked || contactClicked || loginClicked ? (
         <div className="container-wrapper">
           <div className="blured-background"></div>
@@ -56,10 +85,21 @@ function LandingPage() {
             <div className="search-btn">Search</div>
           </div>
         </div>
+        <div className="scroll-down">
+          <img src={DownArraw} alt="move-down" />
+        </div>
       </HeroContainer>
-      <div className="scroll-down">
-        <img src={DownArraw} alt="move-down" />
-      </div>
+      <JobContainer>
+        <div className="jobs-panel">
+          {results.length !== 0 &&
+            results.map((job) => (
+              <>
+                <JobTile jobDetails={job.jobDetails} id={job.id} key={job.id} />
+              </>
+            ))}
+        </div>
+      </JobContainer>
+      <Footer>&copy;2022, Jeniro International Holdings Pvt Ltd</Footer>
     </Container>
   );
 }
@@ -96,6 +136,37 @@ const Container = styled.div`
     z-index: -1;
   }
 
+  .container-wrapper {
+    width: 100%;
+    height: 100vh;
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .blured-background {
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(8px);
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  }
+`;
+
+const HeroContainer = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-left: 20vh;
+  position: relative;
+
   .scroll-down {
     position: absolute;
     bottom: 30px;
@@ -123,36 +194,6 @@ const Container = styled.div`
       }
     }
   }
-
-  .container-wrapper {
-    width: 100%;
-    height: 100vh;
-    z-index: 10;
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .blured-background {
-      width: 100%;
-      height: 100%;
-      backdrop-filter: blur(8px);
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
-  }
-`;
-
-const HeroContainer = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  padding-left: 20vh;
 
   .content-container {
     display: flex;
@@ -313,4 +354,42 @@ const HeroContainer = styled.div`
       }
     }
   }
+`;
+
+const JobContainer = styled.div`
+  height: max-content;
+  padding-top: 30px;
+  padding-inline: 30px;
+  display: flex;
+  column-gap: 30px;
+  align-items: flex-start;
+
+  .jobs-panel {
+    width: 80%;
+    margin-inline: auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    row-gap: 20px;
+    padding: 10px;
+  }
+
+  @media only screen and (max-width: 980px) {
+    .jobs-panel {
+      width: 100%;
+    }
+  }
+`;
+
+const Footer = styled.div`
+  width: 100%;
+  height: 100px;
+  background-color: var(--theme1);
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: var(--small);
 `;

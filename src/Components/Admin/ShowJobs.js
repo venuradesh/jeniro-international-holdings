@@ -5,8 +5,8 @@ import styled from "styled-components";
 //component
 import JobTile from "../JobTile";
 
-const API_URL = "http://localhost:5000";
-// const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function ShowJobs() {
   const [isLoaded, setIsLoaded] = useState(false);

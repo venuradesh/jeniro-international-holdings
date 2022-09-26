@@ -1,34 +1,73 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 //images
 import Cover from "../../assets/admin-cover.jpg";
 
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+
 function AdminHome() {
+  const [homeData, setHomeData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get(`${API_URL}/homeDetails`, {
+        headers: {
+          userid: localStorage.getItem("user"),
+        },
+      })
+      .then((response) => {
+        if (!response.data.error) {
+          setHomeData(response.data.result);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  }, []);
+
   return (
     <Container>
-      <div className="welcome">Welcome to Admin Dashboard</div>
-      <div className="cover">
-        <img src={Cover} alt="admin-cover" />
-        <div className="content-container">
-          <div className="title">Hello Venura</div>
-          <div className="desc">You can use this dashboard to view all users, add new jobs, add news to the users, and see how they are displayed at the user's view</div>
-        </div>
-      </div>
-      <div className="cards">
-        <div className="card">
-          <div className="title">Users</div>
-          <div className="desc">User count that are registerd on the site</div>
-          <div className="count">35</div>
-          <div className="count-alt">users</div>
-        </div>
-        <div className="card">
-          <div className="title">Jobs</div>
-          <div className="desc">Job count that the users can apply</div>
-          <div className="count">35</div>
-          <div className="count-alt">jobs</div>
-        </div>
-      </div>
+      {loading ? (
+        <>
+          <div className="welcome">Welcome to Admin Dashboard</div>
+          <div className="cover">
+            <img src={Cover} alt="admin-cover" />
+            <div className="content-container">
+              <div className="title">Hello {homeData.userName}</div>
+              <div className="desc">You can use this dashboard to view all users, add new jobs, add news to the users, and see how they are displayed at the user's view</div>
+            </div>
+          </div>
+          <div className="cards">
+            <div className="card">
+              <div className="title">Users</div>
+              <div className="desc">User count that are registerd on the site</div>
+              <div className="count">{homeData.userCount}</div>
+              <div className="count-alt">users</div>
+            </div>
+            <div className="card">
+              <div className="title">Jobs</div>
+              <div className="desc">Job count that the users can apply</div>
+              <div className="count">{homeData.jobsCount}</div>
+              <div className="count-alt">jobs</div>
+            </div>
+            <div className="card">
+              <div className="title">News</div>
+              <div className="desc">News count that the users can view</div>
+              <div className="count">{homeData.newsCount}</div>
+              <div className="count-alt">news available</div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>Loading</>
+      )}
     </Container>
   );
 }

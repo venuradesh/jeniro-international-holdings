@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { collection, addDoc, getDocs, getDoc, doc, query, where, orderBy, deleteDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, getDoc, doc, query, where, orderBy, deleteDoc, updateDoc } from "firebase/firestore";
 import db from "./firebase-config.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import fileUpload from "express-fileupload";
@@ -45,6 +45,7 @@ app.post("/register", async (req, res) => {
       jobTypes: req.body.jobTypes,
       education: req.body.qualifications,
       professionalQualifications: req.body.professionalQualifications,
+      status: "Registered",
       admin: false,
     });
 
@@ -67,6 +68,62 @@ app.get("/getUser", async (req, res) => {
     }
   } catch (error) {
     res.status(400).send({ message: error });
+  }
+});
+
+app.get("/getNormalUsers", async (req, res) => {
+  const documentArray = [];
+  try {
+    const documents = await getDocs(query(collection(db, "users"), where("admin", "!=", true)));
+    documents.docs.map((doc) => {
+      documentArray.push({ data: doc.data(), id: doc.id });
+    });
+
+    res.status(200).send({ message: "success", userData: documentArray, error: false });
+  } catch (error) {
+    res.status(409).send({ message: "conflict occurs while fetching users", error: true });
+  }
+});
+
+app.put("/updateStatus", (req, res) => {
+  updateDoc(doc(db, "users", req.body.id), {
+    status: req.body.status,
+  })
+    .then(() => {
+      res.status(200).send({ message: "updated", error: false });
+    })
+    .catch((err) => {
+      res.status(409).send({ message: "Error while updating", error: true, errMessage: err });
+    });
+});
+
+app.get("/searchByNic", async (req, res) => {
+  const nic = req.headers.nic;
+  const results = [];
+  try {
+    const documents = await getDocs(query(collection(db, "users"), where("nic", "==", nic)));
+    if (documents.docs.length !== 0) {
+      documents.docs.map((doc) => {
+        results.push({ data: doc.data(), id: doc.id });
+      });
+
+      res.status(200).send({ message: "found", userData: results, error: false });
+    } else {
+      res.status(409).send({ message: "not found", error: true });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.delete("/deleteUser", async (req, res) => {
+  const userid = req.headers.userid;
+  try {
+    const resultingDoc = doc(db, "users", userid);
+    await deleteDoc(resultingDoc);
+    res.status(202).send({ message: "successfully deleted", error: false });
+  } catch (error) {
+    res.status(400).send({ message: "error when deleting", error: true });
   }
 });
 
@@ -280,5 +337,36 @@ app.delete("/deleteJob", async (req, res) => {
     res.status(202).send({ message: "successfully deleted", error: false });
   } catch (error) {
     res.status(409).send({ message: "conflict occurs", error: true });
+  }
+});
+
+/* *********************************************************************** */
+/* *********************************************************************** */
+// Admin home
+app.get("/homeDetails", async (req, res) => {
+  const userid = req.headers.userid;
+  let result = {
+    userName: "",
+    userCount: 0,
+    jobsCount: 0,
+    newsCount: 0,
+  };
+
+  try {
+    const userRef = (await getDoc(doc(db, "users", userid))).data();
+    const newsCount = (await getDocs(collection(db, "news"))).docs.length;
+    const jobsCount = (await getDocs(collection(db, "jobs"))).docs.length;
+    const userCount = (await getDocs(query(collection(db, "users"), where("admin", "==", false)))).docs.length;
+
+    result = {
+      userName: userRef.firstName + " " + userRef.lastName,
+      userCount: userCount,
+      jobsCount: jobsCount,
+      newsCount: newsCount,
+    };
+
+    res.status(200).send({ message: "fetched successfully", result: result, error: false });
+  } catch (error) {
+    res.status(400).send({ message: "error when fetching stats", error: true, errMessage: error });
   }
 });
