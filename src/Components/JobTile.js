@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 //images
@@ -11,11 +11,6 @@ const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function JobTile({ admin = false, jobDetails, id, componentRerender }) {
   const [deleteClicked, setDeleteClicked] = useState(false);
-
-  useEffect(() => {
-    console.log(jobDetails);
-    console.log("within");
-  });
 
   const onDeleteBtnClick = () => {
     axios
