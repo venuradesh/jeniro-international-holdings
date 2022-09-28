@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import Lottie from "react-lottie";
+import * as animationData from "../assets/Lotties/submit-loading.json";
 
 //images
 import Wallpaper from "../assets/wallpaper1.jpg";
@@ -11,9 +13,20 @@ import Contact from "../Components/Contact";
 import Login from "../Components/Login";
 import JobTile from "../Components/JobTile";
 import Loading from "./Loading";
+import NewsCard from "../Components/NewsCard";
+import ContentNotFound from "./ContentNotFound";
 
 // const API_URL = "http://localhost:5000";
 const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+
+const lottieOptions = {
+  loop: true,
+  autoplay: true,
+  animationData,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
 
 function LandingPage({ loginRequired = false }) {
   const [jobTypeClicked, setJobTypeClicked] = useState(false);
@@ -23,8 +36,17 @@ function LandingPage({ loginRequired = false }) {
   const [scrolled, setScrolled] = useState(false);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [news, setNews] = useState([]);
+  const [contentNotFound, setContentNotFound] = useState(false);
+  const [jobTitle, setJobTitle] = useState("");
+  const [jobType, setJobType] = useState("");
+  const [componentRerender, setComponentRerender] = useState({ render: false });
+  const [searchClicked, setSearchClicked] = useState(false);
 
   useEffect(() => {
+    setContentNotFound(false);
+    componentRerender.render = false;
+
     if (loginRequired) {
       setLoginClicked(true);
     }
@@ -43,13 +65,65 @@ function LandingPage({ loginRequired = false }) {
         if (!result.data.error) {
           setLoading(false);
           if (result.data.jobs.length === 0) {
+            setContentNotFound(true);
           } else {
             setResults(result.data.jobs);
           }
         }
       })
       .catch((error) => console.log(error));
-  }, [loginRequired]);
+
+    getNews();
+  }, [loginRequired, componentRerender]);
+
+  const getNews = () => {
+    axios
+      .get(`${API_URL}/getLatestNews`)
+      .then((response) => {
+        if (!response.data.error) {
+          if (response.data.news.length !== 0) {
+            setNews(response.data.news);
+          }
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const onSearchClick = () => {
+    setSearchClicked(true);
+    if (!jobTitle && !jobType) {
+      setComponentRerender({ render: true });
+    } else {
+      axios
+        .get(`${API_URL}/filterJobs`, {
+          headers: {
+            jobtitle: jobTitle,
+            jobtype: jobType,
+          },
+        })
+        .then((res) => {
+          if (!res.data.error) {
+            if (res.data.result.length === 0) {
+              setResults([]);
+              setContentNotFound(true);
+              setNews([]);
+            } else {
+              setResults(res.data.result);
+              setContentNotFound(false);
+              getNews();
+            }
+            setJobTitle("");
+            setJobType("");
+            document.getElementById("job-title").value = "";
+            document.getElementById("job-type").selectedIndex = 0;
+            setSearchClicked(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
 
   return (
     <Container>
@@ -78,24 +152,26 @@ function LandingPage({ loginRequired = false }) {
               </div>
               <div className="desc">Find jobs, Employment and Career opportunities</div>
               <div className="input-field-container">
-                <input placeholder="Job Title" type="text" name="keyword" id="job-title" className="job-title" />
+                <input placeholder="Job Title" type="text" name="keyword" id="job-title" className="job-title" onInput={(e) => setJobTitle(e.target.value)} />
                 <div className={`select ${jobTypeClicked ? "active" : ""}`} onClick={() => (!jobTypeClicked ? setJobTypeClicked(true) : setJobTypeClicked(false))}>
-                  <select name="job-type" id="job-type" className="job-type" defaultValue={"none"}>
+                  <select name="job-type" id="job-type" className="job-type" defaultValue={"none"} onChange={(e) => setJobType(e.target.value)}>
                     <option value="none" hidden className="select-item">
                       Job Type
                     </option>
-                    <option value="Nursing" className="select-item">
-                      Nursing
+                    <option value="Nurse" className="select-item">
+                      Nurse
                     </option>
-                    <option value="Engineering" className="select-item">
-                      Engineering
+                    <option value="Engineer" className="select-item">
+                      Engineer
                     </option>
                     <option value="Doctor" className="select-item">
                       Doctor
                     </option>
                   </select>
                 </div>
-                <div className="search-btn">Search</div>
+                <div className="search-btn" onClick={() => (!searchClicked ? onSearchClick() : "")}>
+                  {searchClicked ? <Lottie options={lottieOptions} width={30} /> : "Search"}
+                </div>
               </div>
             </div>
             <div className="scroll-down">
@@ -103,14 +179,31 @@ function LandingPage({ loginRequired = false }) {
             </div>
           </HeroContainer>
           <JobContainer>
-            <div className="jobs-panel">
-              {results.length !== 0 &&
-                results.map((job) => (
-                  <>
-                    <JobTile jobDetails={job.jobDetails} id={job.id} key={job.id} />
-                  </>
-                ))}
-            </div>
+            {contentNotFound ? (
+              <div className="no-content">
+                <ContentNotFound content={"jobs"} />
+              </div>
+            ) : (
+              <>
+                <div className="jobs-panel">
+                  {results.length !== 0 &&
+                    results.map((job) => (
+                      <>
+                        <JobTile jobDetails={job.jobDetails} id={job.id} key={job.id} />
+                      </>
+                    ))}
+                </div>
+                {news.length !== 0 ? (
+                  <div className="news-panel">
+                    {news.map((news, key) => (
+                      <NewsCard admin={false} data={news} newsId={news.id} key={key} />
+                    ))}
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </>
+            )}
           </JobContainer>
           <Footer>&copy;2022, Jeniro International Holdings Pvt Ltd</Footer>
         </>
@@ -387,8 +480,16 @@ const JobContainer = styled.div`
   column-gap: 30px;
   align-items: flex-start;
 
+  .no-content {
+    width: 100vw;
+    height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .jobs-panel {
-    width: 80%;
+    flex: 3;
     margin-inline: auto;
     height: 100%;
     display: flex;
@@ -396,6 +497,26 @@ const JobContainer = styled.div`
     overflow: auto;
     row-gap: 20px;
     padding: 10px;
+  }
+
+  .news-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+  }
+
+  @media only screen and (max-width: 1280px) {
+    flex-direction: column;
+    row-gap: 20px;
+
+    .news-panel {
+      width: 100%;
+      flex-direction: row;
+      justify-content: center;
+      flex-wrap: wrap;
+      z-index: 0;
+    }
   }
 
   @media only screen and (max-width: 980px) {

@@ -6,6 +6,7 @@ import styled from "styled-components";
 //images
 import Back from "../assets/back.png";
 import Loading from "./Loading";
+import Point from "../assets/point.png";
 
 // const API_URL = "http://localhost:5000";
 const API_URL = "https://jeniro-international-holdings.herokuapp.com";
@@ -14,6 +15,8 @@ function JobScreen({ admin = false }) {
   const jobid = useParams().id;
   const [loading, setLoading] = useState(true);
   const [jobDetails, setJobDetails] = useState(null);
+  const [jobRequirements, setJobRequirements] = useState([]);
+  const [jobResponsibilities, setJobResponsibilities] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,12 +30,14 @@ function JobScreen({ admin = false }) {
         setLoading(false);
         if (!res.data.error) {
           setJobDetails(res.data.jobData);
+          setJobRequirements(res.data.jobData.requirements ? res.data.jobData.requirements.split("\n") : []);
+          setJobResponsibilities(res.data.jobData.responsibilities ? res.data.jobData.responsibilities.split("\n") : []);
         }
       })
       .catch((err) => {
         console.log(err);
       });
-  });
+  }, [jobid]);
 
   return (
     <Container>
@@ -52,17 +57,41 @@ function JobScreen({ admin = false }) {
             <div className="content">
               <div className="title">{jobDetails.jobTitle}</div>
               <div className="job-overview">{jobDetails.jobOverview}</div>
-              <div className="btn-container">{admin ? <></> : <div className="apply btn">Apply Now</div>}</div>
+              <div className="btn-container">
+                {admin ? (
+                  <></>
+                ) : (
+                  <a href={`mailto:jeniromoving@gmail.com?subject=Application for the job ${jobDetails.jobTitle}&body=Upload the CV and all other necessary documents with this email`} className="apply btn">
+                    Apply Now
+                  </a>
+                )}
+              </div>
             </div>
           </LeftSection>
           <MiddleSection>
             <div className="requirements item">
               <div className="title">Job Requirements</div>
-              <div className="content">{jobDetails.requirements}</div>
+              <div className="content">
+                {jobRequirements.length !== 0 &&
+                  jobRequirements.map((req, key) => (
+                    <div className="container" key={key}>
+                      <img src={Point} alt="point" />
+                      {req}
+                    </div>
+                  ))}
+              </div>
             </div>
             <div className="job-res item">
               <div className="title">Job Responsibilities</div>
-              <div className="content">{jobDetails.responsibilities}</div>
+              <div className="content">
+                {jobResponsibilities.length !== 0 &&
+                  jobResponsibilities.map((res, key) => (
+                    <div className="container" key={key}>
+                      <img src={Point} alt="point" />
+                      {res}
+                    </div>
+                  ))}
+              </div>
             </div>
           </MiddleSection>
           <RightSection>
@@ -200,6 +229,10 @@ const LeftSection = styled.div`
       width: 100%;
       margin-top: auto;
 
+      a {
+        text-decoration: none;
+      }
+
       .btn {
         width: 100%;
         height: 50px;
@@ -278,7 +311,7 @@ const MiddleSection = styled.div`
   box-shadow: 0 0 5px 0 var(--gray);
   display: flex;
   flex-direction: column;
-  row-gap: 50px;
+  row-gap: 30px;
 
   .item {
     display: flex;
@@ -296,6 +329,17 @@ const MiddleSection = styled.div`
       color: var(--theme1);
       font-weight: var(--font-w-300);
       line-height: 25px;
+
+      .container {
+        display: flex;
+        align-items: center;
+        column-gap: 10px;
+        margin-left: 20px;
+
+        img {
+          width: 15px;
+        }
+      }
     }
   }
 

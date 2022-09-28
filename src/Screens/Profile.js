@@ -45,6 +45,7 @@ function Profile() {
   const [componentRerender, setComponentRerender] = useState({ status: false });
   const [updateclicked, setUpdateClicked] = useState(false);
   const [updateComplete, setUpdateComplete] = useState(false);
+  const [porfQul, setProfQul] = useState([]);
 
   useEffect(() => {
     setLoading(true);
@@ -67,6 +68,7 @@ function Profile() {
       .then((res) => {
         setLoading(false);
         setUserData(res.data.userData);
+        setProfQul(res.data.userData.professionalQualifications ? res.data.userData.professionalQualifications.split("\n") : []);
         if (res.data.userData.status === "Registered") {
           setStatus(["Registered"]);
         } else if (res.data.userData.status === "First Payment") {
@@ -209,7 +211,13 @@ function Profile() {
                   Job Type: <span>{userData.jobTypes}</span>{" "}
                 </div>
                 <div className="professional item">
-                  Professional Qualifications: <span>{userData.professionalQualifications}</span>
+                  <div className="title">Professional Qualifications:</div>
+                  {porfQul.length !== 0 &&
+                    porfQul.map((qul, key) => (
+                      <div className="content" key={key}>
+                        <span>{qul}</span>
+                      </div>
+                    ))}
                 </div>
               </div>
               <form className="edit-section">
@@ -531,6 +539,12 @@ const RightSection = styled.div`
       span {
         font-weight: var(--font-w-500);
         margin-left: 10px;
+      }
+
+      &.professional {
+        .title {
+          margin-bottom: 10px;
+        }
       }
 
       &.professional {

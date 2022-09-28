@@ -18,7 +18,6 @@ import AddAdministrator from "./Components/Admin/AddAdministrator";
 import NewsSection from "./Screens/NewsSection";
 import Profile from "./Screens/Profile";
 import JobScreen from "./Screens/JobScreen";
-import JobApply from "./Components/JobApply";
 
 const App = () => {
   const [isLoaded, setIsLoaded] = useState(false);

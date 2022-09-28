@@ -339,14 +339,14 @@ const Container = styled.div`
 `;
 
 const NewsContainer = styled.div`
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   max-width: 100vw;
   top: 0;
+  left: 0;
   z-index: 900;
-  /* background-color: red; */
-  /* backdrop-filter: blur(3px); */
+  backdrop-filter: blur(5px);
 
   .news-wrapper {
     position: fixed;

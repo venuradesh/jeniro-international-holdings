@@ -1,9 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { collection, addDoc, getDocs, getDoc, doc, query, where, orderBy, deleteDoc, updateDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, getDoc, doc, query, where, orderBy, deleteDoc, updateDoc, limit } from "firebase/firestore";
 import db from "./firebase-config.js";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject, connectStorageEmulator } from "firebase/storage";
 import fileUpload from "express-fileupload";
 
 const app = express();
@@ -308,6 +308,21 @@ app.get("/get-news", async (req, res) => {
   }
 });
 
+//get latest 3 news
+app.get("/getLatestNews", async (req, res) => {
+  let data = [];
+  try {
+    const docsRef = await getDocs(collection(db, "news"), orderBy("time", "desc"), limit(3));
+    docsRef.docs.map((doc) => {
+      data.push({ data: doc.data(), id: doc.id });
+    });
+
+    res.status(200).send({ news: data, error: false, message: "Fetched" });
+  } catch (error) {
+    res.status(409).send({ message: "Conflict occurs while fetching news", error: true });
+  }
+});
+
 //delete news
 app.delete("/delete-news", async (req, res) => {
   const newsId = req.headers.newsid;
@@ -416,6 +431,35 @@ app.get("/job", async (req, res) => {
     res.status(200).send({ message: "successfully fetched", jobData: jobDetails.data(), error: false });
   } catch (error) {
     res.status(409).send({ message: "Conflict occurs during Fetching", error: true, errorMessage: error });
+  }
+});
+
+app.get("/filterJobs", async (req, res) => {
+  const jobtype = req.headers.jobtype;
+  const jobtitle = req.headers.jobtitle;
+  const result = [];
+
+  try {
+    if (jobtype && !jobtitle) {
+      const documentsRef = await getDocs(query(collection(db, "jobs"), where("jobCategroy", "==", jobtype)));
+      documentsRef.docs.map((doc) => {
+        result.push({ jobDetails: doc.data(), id: doc.id });
+      });
+    } else if (jobtitle && !jobtype) {
+      const documentsRef = await getDocs(query(collection(db, "jobs"), where("jobTitle", "==", jobtitle)));
+      documentsRef.docs.map((doc) => {
+        result.push({ jobDetails: doc.data(), id: doc.id });
+      });
+    } else {
+      const documentsRef = await getDocs(query(collection(db, "jobs"), where("jobTitle", "==", jobtitle), where("jobCategroy", "==", jobtype)));
+      documentsRef.docs.map((doc) => {
+        result.push({ jobDetails: doc.data(), id: doc.id });
+      });
+    }
+
+    res.status(200).send({ result: result, error: false });
+  } catch (error) {
+    res.status(409).send({ message: "conflict while filtering", error: true, errorMessage: error });
   }
 });
 
