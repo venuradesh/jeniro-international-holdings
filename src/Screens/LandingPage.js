@@ -10,6 +10,7 @@ import AboutUs from "../Components/AboutUs";
 import Contact from "../Components/Contact";
 import Login from "../Components/Login";
 import JobTile from "../Components/JobTile";
+import Loading from "./Loading";
 
 // const API_URL = "http://localhost:5000";
 const API_URL = "https://jeniro-international-holdings.herokuapp.com";
@@ -21,6 +22,7 @@ function LandingPage() {
   const [contactClicked, setContactClicked] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.addEventListener("scroll", () => {
@@ -35,6 +37,7 @@ function LandingPage() {
       .get(`${API_URL}/getJobs`)
       .then((result) => {
         if (!result.data.error) {
+          setLoading(false);
           if (result.data.jobs.length === 0) {
           } else {
             setResults(result.data.jobs);
@@ -46,60 +49,68 @@ function LandingPage() {
 
   return (
     <Container>
-      <Header scrolled={scrolled} loginClick={setLoginClicked} aboutUsClick={setAboutUsClicked} contactClick={setContactClicked} />
-      {aboutUsClicked || contactClicked || loginClicked ? (
-        <div className="container-wrapper">
-          <div className="blured-background"></div>
-          {loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact contactClick={setContactClicked} /> : aboutUsClicked ? <AboutUs aboutUsClick={setAboutUsClicked} /> : <></>}
+      {loading ? (
+        <div className="loading-container">
+          <Loading />
         </div>
       ) : (
-        <></>
-      )}
-      <div className="background-image"></div>
-      <div className="background-tint"></div>
-      <HeroContainer>
-        <div className="content-container">
-          <div className="title">
-            <div>Browse. Apply.</div>
-            <div>Prepare for your Future</div>
-          </div>
-          <div className="desc">Find jobs, Employment and Career opportunities</div>
-          <div className="input-field-container">
-            <input placeholder="Job Title" type="text" name="keyword" id="job-title" className="job-title" />
-            <div className={`select ${jobTypeClicked ? "active" : ""}`} onClick={() => (!jobTypeClicked ? setJobTypeClicked(true) : setJobTypeClicked(false))}>
-              <select name="job-type" id="job-type" className="job-type" defaultValue={"none"}>
-                <option value="none" hidden className="select-item">
-                  Job Type
-                </option>
-                <option value="Nursing" className="select-item">
-                  Nursing
-                </option>
-                <option value="Engineering" className="select-item">
-                  Engineering
-                </option>
-                <option value="Doctor" className="select-item">
-                  Doctor
-                </option>
-              </select>
+        <>
+          <Header scrolled={scrolled} loginClick={setLoginClicked} aboutUsClick={setAboutUsClicked} contactClick={setContactClicked} />
+          {aboutUsClicked || contactClicked || loginClicked ? (
+            <div className="container-wrapper">
+              <div className="blured-background"></div>
+              {loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact contactClick={setContactClicked} /> : aboutUsClicked ? <AboutUs aboutUsClick={setAboutUsClicked} /> : <></>}
             </div>
-            <div className="search-btn">Search</div>
-          </div>
-        </div>
-        <div className="scroll-down">
-          <img src={DownArraw} alt="move-down" />
-        </div>
-      </HeroContainer>
-      <JobContainer>
-        <div className="jobs-panel">
-          {results.length !== 0 &&
-            results.map((job) => (
-              <>
-                <JobTile jobDetails={job.jobDetails} id={job.id} key={job.id} />
-              </>
-            ))}
-        </div>
-      </JobContainer>
-      <Footer>&copy;2022, Jeniro International Holdings Pvt Ltd</Footer>
+          ) : (
+            <></>
+          )}
+          <div className="background-image"></div>
+          <div className="background-tint"></div>
+          <HeroContainer>
+            <div className="content-container">
+              <div className="title">
+                <div>Browse. Apply.</div>
+                <div>Prepare for your Future</div>
+              </div>
+              <div className="desc">Find jobs, Employment and Career opportunities</div>
+              <div className="input-field-container">
+                <input placeholder="Job Title" type="text" name="keyword" id="job-title" className="job-title" />
+                <div className={`select ${jobTypeClicked ? "active" : ""}`} onClick={() => (!jobTypeClicked ? setJobTypeClicked(true) : setJobTypeClicked(false))}>
+                  <select name="job-type" id="job-type" className="job-type" defaultValue={"none"}>
+                    <option value="none" hidden className="select-item">
+                      Job Type
+                    </option>
+                    <option value="Nursing" className="select-item">
+                      Nursing
+                    </option>
+                    <option value="Engineering" className="select-item">
+                      Engineering
+                    </option>
+                    <option value="Doctor" className="select-item">
+                      Doctor
+                    </option>
+                  </select>
+                </div>
+                <div className="search-btn">Search</div>
+              </div>
+            </div>
+            <div className="scroll-down">
+              <img src={DownArraw} alt="move-down" />
+            </div>
+          </HeroContainer>
+          <JobContainer>
+            <div className="jobs-panel">
+              {results.length !== 0 &&
+                results.map((job) => (
+                  <>
+                    <JobTile jobDetails={job.jobDetails} id={job.id} key={job.id} />
+                  </>
+                ))}
+            </div>
+          </JobContainer>
+          <Footer>&copy;2022, Jeniro International Holdings Pvt Ltd</Footer>
+        </>
+      )}
     </Container>
   );
 }
@@ -111,6 +122,14 @@ const Container = styled.div`
   height: max-content;
   position: relative;
   z-index: 0;
+
+  .loading-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   .background-image {
     width: 100vw;

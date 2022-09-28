@@ -93,7 +93,9 @@ function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, regi
                 {firstName + " " + lastName}
               </div>
               <div className={`logout-container ${userProfileClicked ? "active" : ""}`}>
-                <div className="profile-view logout-item">View Profile</div>
+                <div className="profile-view logout-item" onClick={() => navigate("/profile")}>
+                  View Profile
+                </div>
                 <div className="logout logout-item" onClick={() => Logout()}>
                   Logout
                 </div>
@@ -111,7 +113,7 @@ function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, regi
         </div>
         <div className={`navigation ${hamburgerClicked ? "active" : ""}`}>
           {firstName ? (
-            <div className="profile-name item">
+            <div className="profile-name item" onClick={() => navigate("/profile")}>
               <img src={User} alt="user-logo" />
               {firstName + " " + lastName}
             </div>

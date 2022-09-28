@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 //images
@@ -12,11 +12,6 @@ const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 function JobTile({ admin = false, jobDetails, id, componentRerender }) {
   const [deleteClicked, setDeleteClicked] = useState(false);
 
-  useEffect(() => {
-    console.log(jobDetails);
-    console.log("within");
-  });
-
   const onDeleteBtnClick = () => {
     axios
       .delete(`${API_URL}/deleteJob`, {
@@ -26,10 +21,9 @@ function JobTile({ admin = false, jobDetails, id, componentRerender }) {
         },
       })
       .then((response) => {
-        console.log(response);
         if (!response.data.error) {
           setDeleteClicked(false);
-          componentRerender(true);
+          componentRerender({ render: true });
         }
       })
       .catch((err) => {
@@ -38,13 +32,13 @@ function JobTile({ admin = false, jobDetails, id, componentRerender }) {
   };
 
   return (
-    <Container cover={jobDetails.companyLogo}>
+    <Container cover={jobDetails.jobCover}>
       <div className="job-overview">
         <div className="company-logo"></div>
         <div className="content-container">
           <div className="job-title">
             {jobDetails.jobTitle} <span className="dash">-</span>
-            <span> {jobDetails.companyName}</span>
+            <span> {jobDetails.workLocation}</span>
           </div>
           <div className="job-desc">{jobDetails.jobOverview}</div>
           <div className="items">

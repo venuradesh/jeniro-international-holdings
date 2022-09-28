@@ -6,6 +6,10 @@ import UserTile from "./UserTile";
 import Lottie from "react-lottie";
 import * as animationData from "../../assets/Lotties/submit-loading.json";
 
+//components
+import Loading from "../../Screens/Loading";
+import ContentNotFound from "../../Screens/ContentNotFound";
+
 // const API_URL = "http://localhost:5000";
 const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
@@ -136,7 +140,9 @@ function Users() {
       {error ? <div className="error-container">*{error}</div> : <></>}
       <div className="users-container">
         {loading ? (
-          <>Loading</>
+          <div className="loading-container">
+            <Loading />
+          </div>
         ) : contentLoaded ? (
           <>
             {users.map((user) => (
@@ -144,7 +150,9 @@ function Users() {
             ))}
           </>
         ) : (
-          <div className="no-users">Users not available</div>
+          <div className="no-users">
+            <ContentNotFound content="Users" />
+          </div>
         )}
       </div>
     </Container>
@@ -214,6 +222,14 @@ const Container = styled.div`
     overflow-y: auto;
     padding: 10px;
     padding-bottom: 50px;
+
+    .loading-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     .no-users {
       width: 100%;

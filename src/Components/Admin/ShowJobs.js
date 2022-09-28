@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import ContentNotFound from "../../Screens/ContentNotFound";
+import Loading from "../../Screens/Loading";
 
 //component
 import JobTile from "../JobTile";
@@ -12,9 +14,11 @@ function ShowJobs() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [noData, setNoData] = useState(false);
-  const [componentRerender, setComponentRerender] = useState(false);
+  const [componentRerender, setComponentRerender] = useState({ render: false });
 
   useEffect(() => {
+    componentRerender.render = false;
+
     axios
       .get(`${API_URL}/getJobs`)
       .then((response) => {
@@ -36,7 +40,23 @@ function ShowJobs() {
   return (
     <Container>
       <div className="title">Jobs Available</div>
-      <div className="jobs-container">{isLoaded ? <>{jobs.length !== 0 && jobs.map((job) => <JobTile admin={true} jobDetails={job.jobDetails} id={job.id} key={job.id} componentRerender={setComponentRerender} />)}</> : <>{noData ? "No Jobs to be display" : "Loading"}</>}</div>
+      <div className="jobs-container">
+        {isLoaded ? (
+          <>{jobs.length !== 0 && jobs.map((job) => <JobTile admin={true} jobDetails={job.jobDetails} id={job.id} key={job.id} componentRerender={setComponentRerender} />)}</>
+        ) : (
+          <>
+            {noData ? (
+              <div className="no-data">
+                <ContentNotFound content="Jobs" />
+              </div>
+            ) : (
+              <div className="loading-container">
+                <Loading />
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </Container>
   );
 }
@@ -61,8 +81,19 @@ const Container = styled.div`
   }
 
   .jobs-container {
+    width: 100%;
+    height: 80%;
     display: flex;
     flex-direction: column;
     row-gap: 20px;
+
+    .loading-container,
+    .no-data {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 `;

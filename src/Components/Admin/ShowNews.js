@@ -1,23 +1,35 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import ContentNotFound from "../../Screens/ContentNotFound";
 
 //component
+import Loading from "../../Screens/Loading";
 import NewsCard from "../NewsCard";
 
 // const API_URL = "http://localhost:5000";
 const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function ShowNews() {
+  const [contentUnavailable, setContentUnAvailable] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [newsArray, setNewsArray] = useState([]);
-  const [loadComponentAgain, setLoadComponentAgain] = useState(false);
+  const [loadComponentAgain, setLoadComponentAgain] = useState({ render: false });
 
   useEffect(() => {
-    setLoadComponentAgain(false);
+    loadComponentAgain.render = false;
+    setContentUnAvailable(false);
+    setLoading(true);
+
     axios
       .get(`${API_URL}/get-news`)
       .then((res) => {
-        setNewsArray(res.data.result);
+        setLoading(false);
+        if (res.data.result.length === 0) {
+          setContentUnAvailable(true);
+        } else {
+          setNewsArray(res.data.result);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -27,7 +39,7 @@ function ShowNews() {
   return (
     <Container>
       <div className="title">Available News</div>
-      <div className="news-container">
+      <div className={`news-container ${loading || contentUnavailable ? "loading" : ""}`}>
         {newsArray.length > 0 ? (
           <>
             {newsArray.map((news) => (
@@ -35,7 +47,19 @@ function ShowNews() {
             ))}
           </>
         ) : (
-          <>{newsArray.length === 0 ? <div className="not-available">No news Available</div> : <></>}</>
+          <>
+            {contentUnavailable ? (
+              <div className="not-available">
+                <ContentNotFound content="News" />
+              </div>
+            ) : loading ? (
+              <div className="loading-container">
+                <Loading />
+              </div>
+            ) : (
+              <></>
+            )}
+          </>
         )}
       </div>
     </Container>
@@ -66,5 +90,9 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     row-gap: 20px;
+
+    &.loading {
+      height: 80%;
+    }
   }
 `;
