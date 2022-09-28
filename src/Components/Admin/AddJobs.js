@@ -127,9 +127,9 @@ function AddJobs() {
           </div>
           <div className="job-overview item">
             <textarea name="job-overview" id="job-overview" className="job-overview overview" placeholder="*Job Overview (max 120ch)" onInput={(e) => setJobOverview(e.target.value)} maxLength={120}></textarea>
-            <textarea name="job-resp" id="job-resp" className="job-resp overview" placeholder="Job Responsibilities" onInput={(e) => setJobRes(e.target.value)}></textarea>
+            <textarea name="job-resp" id="job-resp" className="job-resp overview" placeholder="Job Responsibilities (Hit enter to add new point)" onInput={(e) => setJobRes(e.target.value)}></textarea>
           </div>
-          <textarea name="job-req" id="job-req" className="job-req overview" placeholder="*Job Requirements" onInput={(e) => setJobReq(e.target.value)}></textarea>
+          <textarea name="job-req" id="job-req" className="job-req overview" placeholder="*Job Requirements (Hit enter to add new point)" onInput={(e) => setJobReq(e.target.value)}></textarea>
           {error ? <div className="error-container">*{error}</div> : <></>}
           <div className="btn-container item">
             <button type="submit" className="submit btn" onClick={(e) => (!loading ? onSubmitClick(e) : "")}>
