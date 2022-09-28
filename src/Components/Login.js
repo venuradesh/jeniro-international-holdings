@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Lottie from "react-lottie";
 import * as AnimationData from "../assets/Lotties/submit-loading.json";
 
@@ -16,7 +16,7 @@ import InputFeild from "./InputFeild";
 // const API_URL = "http://localhost:5000";
 const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
-function Login({ loginClick }) {
+function Login({ loginClick, loginRequired = false }) {
   const navigate = useNavigate();
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,6 +25,7 @@ function Login({ loginClick }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nic, setNIC] = useState("");
+  let jobid = useParams().id;
 
   const lottieOptions = {
     loop: true,
@@ -53,10 +54,14 @@ function Login({ loginClick }) {
             localStorage.setItem("user", result.data.userId);
             loginClick(false);
             if (result.data.admin === true) {
-              navigate("/admin");
               localStorage.setItem("adminLogged", true);
+              navigate("/admin");
             } else {
-              navigate("/");
+              if (loginRequired) {
+                navigate(`/job/${jobid}`);
+              } else {
+                navigate("/");
+              }
             }
             setLoading(false);
             window.location.reload();
@@ -91,7 +96,13 @@ function Login({ loginClick }) {
         </div>
       </div>
       <div className="content-container">
-        <div className="close-btn" onClick={() => loginClick(false)}>
+        <div
+          className="close-btn"
+          onClick={() => {
+            loginClick(false);
+            navigate("/");
+          }}
+        >
           <img src={Close} alt="close-btn" className="close-btn-icon" />
         </div>
         <div className="title">Login</div>
@@ -107,7 +118,9 @@ function Login({ loginClick }) {
             {loading ? <Lottie options={lottieOptions} width={60} height={30} /> : "Submit"}
           </div>
         </div>
-        <div className="create-acc">create an account</div>
+        <div className="create-acc" onClick={() => navigate("/register")}>
+          create an account
+        </div>
       </div>
     </Container>
   );

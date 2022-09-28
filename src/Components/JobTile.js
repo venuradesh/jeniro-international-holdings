@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 //images
 import Location from "../assets/location.png";
@@ -10,6 +11,7 @@ import Time from "../assets/time.png";
 const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function JobTile({ admin = false, jobDetails, id, componentRerender }) {
+  const navigate = useNavigate();
   const [deleteClicked, setDeleteClicked] = useState(false);
 
   const onDeleteBtnClick = () => {
@@ -54,7 +56,18 @@ function JobTile({ admin = false, jobDetails, id, componentRerender }) {
         </div>
       </div>
       <div className="btn-container">
-        <div className="view-btn btn">View Job</div>
+        <div
+          className="view-btn btn"
+          onClick={() => {
+            if (admin) {
+              navigate(`/admin/job/${id}`);
+            } else {
+              navigate(`/job/${id}`);
+            }
+          }}
+        >
+          View Job
+        </div>
         {!admin ? (
           <div className="apply-btn btn">Apply Now</div>
         ) : (

@@ -17,6 +17,7 @@ import ShowNews from "./Components/Admin/ShowNews";
 import AddAdministrator from "./Components/Admin/AddAdministrator";
 import NewsSection from "./Screens/NewsSection";
 import Profile from "./Screens/Profile";
+import JobScreen from "./Screens/JobScreen";
 
 const App = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -36,6 +37,7 @@ const App = () => {
           <Routes>
             {adminLogged && user ? (
               <>
+                <Route exact path="admin/job/:id" element={<JobScreen admin={true} />} />
                 <Route exact path="/admin" element={<AdminDashboard />}>
                   <Route index element={<AdminHome />} />
                   <Route path="users" element={<Users />} />
@@ -56,6 +58,7 @@ const App = () => {
                 <Route exact path="/register" element={<Register />} />
                 <Route exact path="/news" element={<NewsSection />} />
                 {user ? <Route exact path="/profile" element={<Profile />} /> : <></>}
+                {user ? <Route exact path="/job/:id" element={<JobScreen />} /> : <Route exact path="/job/:id" element={<LandingPage loginRequired={true} />} />}
                 <Route exact path="*" element={<Navigate to="/" />} />
               </>
             ) : (

@@ -408,6 +408,17 @@ app.delete("/deleteJob", async (req, res) => {
   }
 });
 
+app.get("/job", async (req, res) => {
+  const jobid = req.headers.jobid;
+
+  try {
+    const jobDetails = await getDoc(doc(db, "jobs", jobid));
+    res.status(200).send({ message: "successfully fetched", jobData: jobDetails.data(), error: false });
+  } catch (error) {
+    res.status(409).send({ message: "Conflict occurs during Fetching", error: true, errorMessage: error });
+  }
+});
+
 /* *********************************************************************** */
 /* *********************************************************************** */
 // Admin home
