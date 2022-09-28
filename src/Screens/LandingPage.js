@@ -15,7 +15,7 @@ import Loading from "./Loading";
 // const API_URL = "http://localhost:5000";
 const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
-function LandingPage() {
+function LandingPage({ loginRequired = false }) {
   const [jobTypeClicked, setJobTypeClicked] = useState(false);
   const [loginClicked, setLoginClicked] = useState(false);
   const [aboutUsClicked, setAboutUsClicked] = useState(false);
@@ -25,6 +25,10 @@ function LandingPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (loginRequired) {
+      setLoginClicked(true);
+    }
+
     window.addEventListener("scroll", () => {
       if (window.scrollY >= 70) {
         setScrolled(true);
@@ -45,7 +49,7 @@ function LandingPage() {
         }
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [loginRequired]);
 
   return (
     <Container>
@@ -59,7 +63,7 @@ function LandingPage() {
           {aboutUsClicked || contactClicked || loginClicked ? (
             <div className="container-wrapper">
               <div className="blured-background"></div>
-              {loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact contactClick={setContactClicked} /> : aboutUsClicked ? <AboutUs aboutUsClick={setAboutUsClicked} /> : <></>}
+              {loginClicked ? <Login loginRequired={loginRequired} loginClick={setLoginClicked} /> : contactClicked ? <Contact contactClick={setContactClicked} /> : aboutUsClicked ? <AboutUs aboutUsClick={setAboutUsClicked} /> : <></>}
             </div>
           ) : (
             <></>
