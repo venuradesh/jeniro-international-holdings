@@ -17,8 +17,8 @@ import InputFeild from "../Components/InputFeild";
 import Login from "../Components/Login";
 import Loading from "./Loading";
 
-const API_URL = "http://localhost:5000";
-// const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 const lottieOptions = {
   loop: true,

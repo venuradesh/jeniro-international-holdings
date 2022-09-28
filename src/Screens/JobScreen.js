@@ -7,8 +7,8 @@ import styled from "styled-components";
 import Back from "../assets/back.png";
 import Loading from "./Loading";
 
-const API_URL = "http://localhost:5000";
-// const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function JobScreen({ admin = false }) {
   const jobid = useParams().id;
@@ -52,7 +52,7 @@ function JobScreen({ admin = false }) {
             <div className="content">
               <div className="title">{jobDetails.jobTitle}</div>
               <div className="job-overview">{jobDetails.jobOverview}</div>
-              <div className="btn-container">{admin ? <div className="delete-job btn">Delete Job</div> : <div className="apply btn">Apply Now</div>}</div>
+              <div className="btn-container">{admin ? <></> : <div className="apply btn">Apply Now</div>}</div>
             </div>
           </LeftSection>
           <MiddleSection>
@@ -142,6 +142,7 @@ const Container = styled.div`
     row-gap: 30px;
     height: max-content;
     width: 100vw;
+    min-height: 100vh;
   }
 `;
 
