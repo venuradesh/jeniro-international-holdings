@@ -45,6 +45,7 @@ function LandingPage({ loginRequired = false }) {
 
   useEffect(() => {
     setContentNotFound(false);
+    setSearchClicked(false);
     componentRerender.render = false;
 
     if (loginRequired) {
@@ -93,6 +94,7 @@ function LandingPage({ loginRequired = false }) {
     setSearchClicked(true);
     if (!jobTitle && !jobType) {
       setComponentRerender({ render: true });
+      setSearchClicked(false);
     } else {
       axios
         .get(`${API_URL}/filterJobs`, {
