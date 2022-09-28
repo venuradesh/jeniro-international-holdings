@@ -8,19 +8,15 @@ import animationData from "../../assets/Lotties/submit-loading.json";
 //images
 import Done from "../../assets/checked.png";
 
-// const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "http://localhost:5000";
+// const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function AddJobs() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [contentAdded, setContentAdded] = useState(false);
-  const [companyName, setCompanyName] = useState("");
   const [workLocation, setWorkLocation] = useState("");
-  const [companyOverview, setCompanyOverview] = useState("");
-  const [companyEmail, setCompanyEmail] = useState("");
-  const [companyPhone, setCompanyPhone] = useState("");
-  const [companyLogo, setCompanyLogo] = useState(null);
+  const [jobCover, setJobCover] = useState(null);
   const [jobTitle, setJobTitle] = useState("");
   const [jobType, setJobType] = useState("");
   const [applicationDeadline, setApplicationDeadline] = useState("");
@@ -29,6 +25,8 @@ function AddJobs() {
   const [jobOverview, setJobOverview] = useState("");
   const [jobRes, setJobRes] = useState("");
   const [jobReq, setJobReq] = useState("");
+  const [selectionClicked, setSelectionClicked] = useState(false);
+  const [jobCategory, setJobCategory] = useState("");
 
   const lottieOptions = {
     loop: true,
@@ -43,15 +41,12 @@ function AddJobs() {
   const onSubmitClick = (e) => {
     e.preventDefault();
     setLoading(true);
-    if (companyName && workLocation && companyOverview && companyEmail && companyLogo && jobTitle && jobType && applicationDeadline && jobOverview && jobReq) {
+    if (workLocation && jobCategory && jobCover && jobTitle && jobType && applicationDeadline && jobOverview && jobReq) {
       setError("");
       const formData = new FormData();
-      formData.append("companyLogo", companyLogo, companyLogo.name);
-      formData.append("companyName", companyName);
+      formData.append("jobCover", jobCover, jobCover.name);
       formData.append("workLocation", workLocation);
-      formData.append("companyOverview", companyOverview);
-      formData.append("companyEmail", companyEmail);
-      formData.append("companyPhone", companyPhone);
+      formData.append("jobCategroy", jobCategory);
       formData.append("jobTitle", jobTitle);
       formData.append("jobType", jobType);
       formData.append("applicationDeadline", applicationDeadline);
@@ -85,12 +80,8 @@ function AddJobs() {
 
   const onResetBtnClick = () => {
     setError("");
-    setCompanyName("");
     setWorkLocation("");
-    setCompanyOverview("");
-    setCompanyEmail("");
-    setCompanyPhone("");
-    setCompanyLogo(null);
+    setJobCover(null);
     setJobTitle("");
     setJobType("");
     setApplicationDeadline("");
@@ -100,6 +91,7 @@ function AddJobs() {
     setJobRes("");
     setJobReq("");
     setLoading(false);
+    setJobCategory("");
   };
 
   return (
@@ -107,27 +99,31 @@ function AddJobs() {
       <Container>
         <div className="title-container">Add a Job</div>
         <form className="form-container">
-          <div className="company-info item">
-            <InputFeild type="text" content="*Company Name" id="*company-name" onInput={(e) => setCompanyName(e.target.value)} />
-            <InputFeild type="text" content="*Work Location" id="*location" onInput={(e) => setWorkLocation(e.target.value)} />
-          </div>
-          <textarea name="company-overview" id="company-overview" className="company-overview overview" placeholder="*Company Overview" onInput={(e) => setCompanyOverview(e.target.value)}></textarea>
-          <div className="company-email item">
-            <InputFeild type="text" content="*Company email (not visible)" id="company-email" onInput={(e) => setCompanyEmail(e.target.value)} />
-            <InputFeild type="tel" content="Company phone (not visible)" id="company-phone" onInput={(e) => setCompanyPhone(e.target.value)} />
-          </div>
-          <div className="company-logo" onClick={() => document.getElementById("company-logo").click()}>
-            {companyLogo ? companyLogo.name : "*Add Company Logo"}
-            <input type="file" name="company-logo" id="company-logo" accept="image/jpeg, image/jpg, image/png" onChange={(e) => setCompanyLogo(e.target.files[0])} />
-          </div>
           <div className="job-main item">
             <InputFeild type="text" content="*Job Title" id="job-title" onInput={(e) => setJobTitle(e.target.value)} />
             <InputFeild type="text" content="*Job Type (Full Time, Part Time, Remote)" id="job-type" onInput={(e) => setJobType(e.target.value)} />
+          </div>
+          <div className="job-info item">
+            <InputFeild type="text" content="*Work Location" id="*location" onInput={(e) => setWorkLocation(e.target.value)} />
+            <div className={`selection-status btn ${selectionClicked ? "active" : ""}`} onClick={() => (!selectionClicked ? setSelectionClicked(true) : setSelectionClicked(false))}>
+              <select defaultValue={"none"} onChange={(e) => setJobCategory(e.target.value)}>
+                <option value="none" hidden disabled>
+                  *Select Job Category
+                </option>
+                <option value="Nurse">Nurse</option>
+                <option value="Engineer">Engineer</option>
+                <option value="Doctor">Doctor</option>
+              </select>
+            </div>
           </div>
           <div className="job-details item">
             <InputFeild type="text" content="*Application Deadline (YYYY-MM-DD)" id="application-deadline" onInput={(e) => setApplicationDeadline(e.target.value)} />
             <InputFeild type="number" content="Salary Per Month in $" id="Salary per month" onInput={(e) => setSalary(e.target.value)} />
             <InputFeild type="text" content="Working Experiance Required" id="*working-experience" onInput={(e) => setExperience(e.target.value)} />
+          </div>
+          <div className="company-logo job-cover" onClick={() => document.getElementById("job-cover").click()}>
+            {jobCover ? jobCover.name : "*Add Cover Photo for the Job"}
+            <input type="file" name="job-cover" id="job-cover" accept="image/jpeg, image/jpg, image/png" onChange={(e) => setJobCover(e.target.files[0])} />
           </div>
           <div className="job-overview item">
             <textarea name="job-overview" id="job-overview" className="job-overview overview" placeholder="*Job Overview (max 120ch)" onInput={(e) => setJobOverview(e.target.value)} maxLength={120}></textarea>
@@ -182,6 +178,54 @@ const Container = styled.div`
     width: 100%;
     display: flex;
     column-gap: 30px;
+    align-items: flex-end;
+
+    .selection-status {
+      width: 100%;
+      height: 50px;
+      position: relative;
+      border-bottom: 1px solid var(--theme1);
+      display: flex;
+      align-items: flex-end;
+
+      &::after {
+        content: "";
+        position: absolute;
+        width: 12px;
+        height: 8px;
+        background-color: var(--theme1);
+        clip-path: polygon(0 0, 100% 0, 50% 100%);
+        right: 20px;
+        bottom: 8px;
+        transition: all 0.3s ease;
+      }
+
+      &.active {
+        &::after {
+          clip-path: polygon(50% 0, 0 100%, 100% 100%);
+        }
+      }
+
+      select {
+        background-color: transparent;
+        width: 100%;
+        height: 50%;
+        border: none;
+        outline: none;
+        text-align: left;
+        position: relative;
+        appearance: none;
+        padding: 0;
+        font-size: var(--small);
+        color: var(--theme1);
+        font-weight: var(--font-w-500);
+        opacity: 0.8;
+
+        &::-ms-expand {
+          display: none;
+        }
+      }
+    }
   }
 
   .overview {

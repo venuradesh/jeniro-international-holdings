@@ -21,6 +21,10 @@ app.listen(PORT, () => {
   console.log(`listening on port: ${PORT}`);
 });
 
+/* **************************************************************************************** */
+/* **************************************************************************************** */
+/* User Routes */
+
 app.post("/register", async (req, res) => {
   try {
     const reference = await getDocs(collection(db, "users"));
@@ -177,6 +181,72 @@ app.post("/admin-registration", async (req, res) => {
   }
 });
 
+app.put("/updateUserInfo", async (req, res) => {
+  const userid = req.body.userid;
+  const oldPass = req.body.oldPassword;
+  const newPass = req.body.newPassword;
+  const email = req.body.email;
+  const phone = req.body.phone;
+  const result = {
+    newPass: "",
+    newEmail: "",
+    newPhone: "",
+  };
+
+  try {
+    const docRef = await getDoc(doc(db, "users", userid));
+    if (oldPass) {
+      if (docRef.data().password !== oldPass) {
+        throw { message: "Current Password incorrect", error: true };
+      } else {
+        result.newPass = newPass;
+      }
+    } else {
+      result.newPass = docRef.data().password;
+    }
+
+    if (email) {
+      const usersDocuments = await getDocs(query(collection(db, "users"), where("email", "==", email)));
+      if (usersDocuments.docs.length === 0) {
+        result.newEmail = email;
+      } else {
+        throw { message: "Email already exists", error: true };
+      }
+    } else {
+      result.newEmail = docRef.data().email;
+    }
+
+    if (phone) {
+      const userDocuments = await getDocs(query(collection(db, "users"), where("phone", "==", phone)));
+      if (userDocuments.docs.length === 0) {
+        result.newPhone = phone;
+      } else {
+        throw { message: "Phone number already exists", error: true };
+      }
+    } else {
+      result.newPhone = docRef.data().phone;
+    }
+
+    updateDoc(doc(db, "users", userid), {
+      password: result.newPass,
+      email: result.newEmail,
+      phone: result.newPhone,
+    })
+      .then(() => {
+        res.status(200).send({ message: "Successfully updated", error: false });
+      })
+      .catch((err) => {
+        throw { message: "Error occurd", error: true, errorMessage: err };
+      });
+  } catch (error) {
+    res.status(409).send(error);
+  }
+});
+
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* News Section */
+
 app.post("/addnews", async (req, res) => {
   if (req.files) {
     const storage = getStorage();
@@ -265,22 +335,19 @@ app.delete("/delete-news", async (req, res) => {
 
 //adding job
 app.post("/addjob", (req, res) => {
-  const logoName = `companyLogos/jeniro_jobs_${Date.now()}_${req.files.companyLogo.name}`;
+  console.log(req.files);
+  const logoName = `jobCovers/jeniro_jobs_${Date.now()}_${req.files.jobCover.name}`;
 
   try {
     const storage = getStorage();
     const storageRef = ref(storage, logoName);
-    uploadBytesResumable(storageRef, req.files.companyLogo.data, {
-      contentType: req.files.companyLogo.mimetype,
+    uploadBytesResumable(storageRef, req.files.jobCover.data, {
+      contentType: req.files.jobCover.mimetype,
     }).then((uploadStatus) => {
       if (uploadStatus.state === "success") {
         getDownloadURL(storageRef).then(async (url) => {
           const docRef = await addDoc(collection(db, "jobs"), {
-            companyName: req.body.companyName,
             workLocation: req.body.workLocation,
-            comapnyOverview: req.body.companyOverview,
-            companyEmail: req.body.companyEmail,
-            companyPhone: req.body.companyPhone,
             jobTitle: req.body.jobTitle,
             jobType: req.body.jobType,
             applicationDeadline: req.body.applicationDeadline,
@@ -291,7 +358,8 @@ app.post("/addjob", (req, res) => {
             requirements: req.body.jobReq,
             jobCreatedBy: req.body.jobCreateBy,
             logoPath: uploadStatus.metadata.fullPath,
-            companyLogo: url,
+            jobCover: url,
+            jobCategroy: req.body.jobCategroy,
             createdOn: Date.now(),
           });
 

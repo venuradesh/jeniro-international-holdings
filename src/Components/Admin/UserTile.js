@@ -114,7 +114,11 @@ function UserTile({ userData, id, componentRerender }) {
               Select Status
             </option>
             <option value="Registered">Registered</option>
-            <option value="Paid">Paid</option>
+            <option value="First Payment">First Payment</option>
+            <option value="Second Payment">Second Payment</option>
+            <option value="Job offer given">Job offer given</option>
+            <option value="Third Payment">Third Payment</option>
+            <option value="Visa">Visa</option>
           </select>
         </div>
         {selectedStatus ? (
