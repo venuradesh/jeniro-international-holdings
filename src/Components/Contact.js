@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import emailjs from "@emailjs/browser";
+import Lottie from "react-lottie";
+import * as animationData from "../assets/Lotties/submit-loading.json";
 
 //images
 import Cover from "../assets/contact.png";
@@ -7,11 +10,68 @@ import Close from "../assets/close.png";
 import Facebook from "../assets/facebook.png";
 import Twitter from "../assets/twitter.png";
 import Instagram from "../assets/instagram.png";
+import Done from "../assets/checked.png";
 
 //components
 import InputFeild from "./InputFeild";
 
+const lottieOptions = {
+  loop: true,
+  autoplay: true,
+  animationData,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+  isClickToPauseDisabled: false,
+};
+
 function Contact({ contactClick }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [successullySent, setSuccessfullySent] = useState(false);
+
+  const onSubmitClick = () => {
+    setLoading(true);
+    if (name && email && message) {
+      emailjs
+        .send(
+          "service_67en5i3",
+          "template_omv832t",
+          {
+            our_name: "Jeniro Internationals",
+            from_name: name,
+            from_email: email,
+            message: message,
+          },
+          "E-GOGf90UO7IZEPmO"
+        )
+        .then((res) => {
+          if (res.text === "OK") {
+            setLoading(false);
+            setError("");
+            setSuccessfullySent(true);
+            setTimeout(() => {
+              setSuccessfullySent(false);
+              setEmail("");
+              setMessage("");
+              setName("");
+              document.getElementById("full-name").value = "";
+              document.getElementById("email").value = "";
+              document.getElementById("message").value = "";
+            }, 2000);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setError("Please fill all the details to contact us");
+    }
+  };
+
   return (
     <Container>
       <div className="cover-container">
@@ -41,19 +101,32 @@ function Contact({ contactClick }) {
           <div className="title">Contact</div>
           <div className="message">
             <div className="name">
-              <InputFeild content="Full Name" id="full-name" type="text" />
+              <InputFeild content="Full Name" id="full-name" type="text" onInput={(e) => setName(e.target.value)} />
             </div>
             <div className="email">
-              <InputFeild content="Email" id="email" type="email" />
+              <InputFeild content="Email" id="email" type="email" onInput={(e) => setEmail(e.target.value)} />
             </div>
             <div className="problem">
-              <textarea name="message" id="message" placeholder="Enter your message"></textarea>
+              <textarea name="message" id="message" placeholder="Enter your message" onInput={(e) => setMessage(e.target.value)}></textarea>
             </div>
           </div>
         </div>
+        {error ? <div className="error-container">*{error}</div> : ""}
         <div className="btn-container">
-          <div className="submit">Submit</div>
+          <div className="submit" onClick={() => (!loading ? onSubmitClick() : "")}>
+            {loading ? <Lottie options={lottieOptions} width={30} /> : "Submit"}
+          </div>
         </div>
+        {successullySent ? (
+          <div className="success">
+            <div className="btn">
+              <img src={Done} alt="done" />
+              Successfully Sent the Message
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
         <div className="social-media-links">
           <div className="facebook">
             <img src={Facebook} alt="facebook-logo" />
@@ -234,6 +307,13 @@ const Container = styled.div`
       }
     }
 
+    .error-container {
+      font-size: var(--small);
+      margin-top: 20px;
+      color: var(--btn-red);
+      text-align: center;
+    }
+
     .btn-container {
       width: 100%;
       height: 40px;
@@ -250,6 +330,56 @@ const Container = styled.div`
         justify-content: center;
         color: var(--white);
         font-size: var(--small);
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: var(--btn-color-alt);
+        }
+      }
+    }
+
+    .success {
+      border-radius: 12px;
+      /* background-color: var(--theme1); */
+      margin-top: 20px;
+      margin-bottom: 20px;
+      margin-inline: 10px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .btn {
+        width: 90%;
+        height: 50px;
+        background-color: var(--theme1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        column-gap: 10px;
+        font-size: var(--small);
+        color: var(--white);
+        animation: zoomInOut 1s infinite alternate;
+      }
+
+      @keyframes zoomInOut {
+        0% {
+          transform: scale(0.95);
+        }
+
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      img {
+        width: 20px;
       }
     }
 

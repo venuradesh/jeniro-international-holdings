@@ -7,12 +7,16 @@ import { useNavigate } from "react-router-dom";
 import Location from "../assets/location.png";
 import Time from "../assets/time.png";
 
+//components
+import JobApply from "./JobApply";
+
 // const API_URL = "http://localhost:5000";
 const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function JobTile({ admin = false, jobDetails, id, componentRerender }) {
   const navigate = useNavigate();
   const [deleteClicked, setDeleteClicked] = useState(false);
+  const [applyClicked, setApplyClicked] = useState(false);
 
   const onDeleteBtnClick = () => {
     axios
@@ -69,7 +73,9 @@ function JobTile({ admin = false, jobDetails, id, componentRerender }) {
           View Job
         </div>
         {!admin ? (
-          <div className="apply-btn btn">Apply Now</div>
+          <div className="apply-btn btn" onClick={() => setApplyClicked(true)}>
+            Apply Now
+          </div>
         ) : (
           <div
             className="delete-btn btn"
@@ -99,6 +105,8 @@ function JobTile({ admin = false, jobDetails, id, componentRerender }) {
       ) : (
         <></>
       )}
+
+      {applyClicked ? <JobApply jobName={jobDetails.jobTitle} jobid={id} setApply={setApplyClicked} /> : <></>}
     </Container>
   );
 }
