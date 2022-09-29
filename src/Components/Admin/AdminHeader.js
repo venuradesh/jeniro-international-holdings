@@ -52,7 +52,7 @@ function AdminHeader() {
               <div className="user-name">{userName}</div>
             </div>
             <div className={`logout-container ${profileClicked ? "active" : ""}`}>
-              <div className="item profile">View profile</div>
+              {/* <div className="item profile">View profile</div> */}
               <div className="item logout" onClick={() => onLogoutClick()}>
                 Logout
               </div>

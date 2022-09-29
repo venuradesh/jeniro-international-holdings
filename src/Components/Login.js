@@ -15,8 +15,8 @@ import Back from "../assets/back.png";
 //components
 import InputFeild from "./InputFeild";
 
-const API_URL = "http://localhost:5000";
-// const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function Login({ loginClick, loginRequired = false }) {
   const navigate = useNavigate();
