@@ -16,8 +16,8 @@ import Loading from "./Loading";
 import NewsCard from "../Components/NewsCard";
 import ContentNotFound from "./ContentNotFound";
 
-// const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "http://localhost:5000";
+// const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 const lottieOptions = {
   loop: true,
@@ -172,7 +172,7 @@ function LandingPage({ loginRequired = false }) {
                   </select>
                 </div>
                 <div className="search-btn" onClick={() => (!searchClicked ? onSearchClick() : "")}>
-                  {searchClicked ? <Lottie options={lottieOptions} width={30} /> : "Search"}
+                  {searchClicked ? <Lottie options={lottieOptions} width={40} /> : "Search"}
                 </div>
               </div>
             </div>
@@ -183,7 +183,7 @@ function LandingPage({ loginRequired = false }) {
           <JobContainer>
             {contentNotFound ? (
               <div className="no-content">
-                <ContentNotFound content={"jobs"} />
+                <ContentNotFound content={"For the searched value content"} />
               </div>
             ) : (
               <>

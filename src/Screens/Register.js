@@ -126,7 +126,7 @@ function Register() {
           <div className="blured-background">
             <img src={Logo} alt="company-logo" />
           </div>
-          <div className="login-container">{loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact contactClick={setContactClicked} /> : aboutUsClicked ? <AboutUs aboutUsClick={setAboutUsClicked} /> : <></>}</div>
+          {loginClicked ? <Login loginClick={setLoginClicked} /> : contactClicked ? <Contact contactClick={setContactClicked} /> : aboutUsClicked ? <AboutUs aboutUsClick={setAboutUsClicked} /> : <></>}
         </div>
       ) : (
         <></>
@@ -215,29 +215,21 @@ const Container = styled.div`
     width: 100%;
     height: 100%;
     z-index: 10;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
 
     .blured-background {
       width: 100%;
       height: 100%;
       backdrop-filter: blur(8px);
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       z-index: -1;
-    }
-
-    .login-container {
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
   }
 
