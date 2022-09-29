@@ -4,17 +4,19 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import Lottie from "react-lottie";
 import * as AnimationData from "../assets/Lotties/submit-loading.json";
+import emailjs from "@emailjs/browser";
 
 //images
 import Cover from "../assets/wallpaper2.jpg";
 import Logo from "../assets/logo.png";
 import Close from "../assets/close.png";
+import Back from "../assets/back.png";
 
 //components
 import InputFeild from "./InputFeild";
 
-// const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "http://localhost:5000";
+// const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function Login({ loginClick, loginRequired = false }) {
   const navigate = useNavigate();
@@ -25,6 +27,7 @@ function Login({ loginClick, loginRequired = false }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nic, setNIC] = useState("");
+  const [forgotPassowordClick, setForgotPasswordClick] = useState(false);
   let jobid = useParams().id;
 
   const lottieOptions = {
@@ -85,6 +88,62 @@ function Login({ loginClick, loginRequired = false }) {
     }
   };
 
+  const sendEmailClick = () => {
+    setErr("");
+    setLoading(true);
+    setEmailError(false);
+
+    if (email) {
+      axios
+        .get(`${API_URL}/checkemail`, {
+          headers: {
+            email,
+          },
+        })
+        .then((res) => {
+          if (!res.data.error) {
+            const newPassword = Date.now();
+            emailjs
+              .send(
+                "service_67en5i3",
+                "forgot_password101",
+                {
+                  client_email: email,
+                  password: newPassword,
+                },
+                "E-GOGf90UO7IZEPmO"
+              )
+              .then((status) => {
+                if (status.text === "OK") {
+                  axios
+                    .put(`${API_URL}/resetPassword`, {
+                      newPassword: `${newPassword}`,
+                      email: email,
+                    })
+                    .then((response) => {
+                      if (response.data.status === "OK") {
+                        setLoading(false);
+                        setErr("Email sent. Check your email");
+                      }
+                    })
+                    .catch((resetError) => console.log(resetError));
+                }
+              });
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+          if (err.response.data.error) {
+            setErr(err.response.data.message);
+          }
+        });
+    } else {
+      setErr("Enter your email");
+      setLoading(false);
+      setEmailError(true);
+    }
+  };
+
   return (
     <Container>
       <div className="cover-container">
@@ -100,26 +159,65 @@ function Login({ loginClick, loginRequired = false }) {
           className="close-btn"
           onClick={() => {
             loginClick(false);
-            navigate("/");
           }}
         >
           <img src={Close} alt="close-btn" className="close-btn-icon" />
         </div>
-        <div className="title">Login</div>
-        <div className="input-items-container">
-          <InputFeild type="email" content="Email" id="email" onChange={(e) => setEmail(e.target.value)} error={emailError} />
-          <InputFeild type="password" content="Password" id="password" onChange={(e) => setPassword(e.target.value)} error={passwordError} />
-          <InputFeild type="NIC" content="NIC No" id="nic" onChange={(e) => setNIC(e.target.value)} error={passwordError} />
-        </div>
-        {err ? <div className="error-container">*{err}</div> : <></>}
-        <div className="btn-container">
-          <div className="forgot-password">Forgot password</div>
-          <div className="submit" onClick={() => (!loading ? onSubmitClick() : "")}>
-            {loading ? <Lottie options={lottieOptions} width={60} height={30} /> : "Submit"}
+        <div className={`reset-container ${forgotPassowordClick ? "active" : ""}`}>
+          <div className="title">Reset Password</div>
+          <div className="input-items-container">
+            <InputFeild type="email" content="Enter your email" id="reset-email" onChange={(e) => setEmail(e.target.value)} error={emailError} />
+            <div className="content">
+              <div className="ins">We'll send you an email with reseted password. You can use it to login and once you logged in, you can change the password at your profile.</div>
+            </div>
+          </div>
+          {err ? <div className="error-container">*{err}</div> : <></>}
+
+          <div className="btn-container">
+            <div className="submit" onClick={() => (!loading ? sendEmailClick() : "")}>
+              {loading ? <Lottie options={lottieOptions} width={60} height={30} /> : "Send Email"}
+            </div>
+            <div
+              className="back-btn"
+              onClick={() => {
+                setForgotPasswordClick(false);
+                setErr("");
+                setEmailError(false);
+                setEmail("");
+              }}
+            >
+              <img src={Back} alt="back" />
+            </div>
           </div>
         </div>
-        <div className="create-acc" onClick={() => navigate("/register")}>
-          create an account
+
+        <div className={`login-container ${!forgotPassowordClick ? "active" : ""}`}>
+          <div className="title">Login</div>
+          <div className="input-items-container">
+            <InputFeild type="email" content="Email" id="email" onChange={(e) => setEmail(e.target.value)} error={emailError} />
+            <InputFeild type="password" content="Password" id="password" onChange={(e) => setPassword(e.target.value)} error={passwordError} />
+            <InputFeild type="NIC" content="NIC No" id="nic" onChange={(e) => setNIC(e.target.value)} error={passwordError} />
+          </div>
+          {err ? <div className="error-container">*{err}</div> : <></>}
+          <div className="btn-container">
+            <div
+              className="forgot-password"
+              onClick={() => {
+                setForgotPasswordClick(true);
+                setErr("");
+                setEmailError(false);
+                setEmail("");
+              }}
+            >
+              Forgot password
+            </div>
+            <div className="submit" onClick={() => (!loading ? onSubmitClick() : "")}>
+              {loading ? <Lottie options={lottieOptions} width={60} height={30} /> : "Submit"}
+            </div>
+          </div>
+          <div className="create-acc" onClick={() => navigate("/register")}>
+            create an account
+          </div>
         </div>
       </div>
     </Container>
@@ -195,6 +293,7 @@ const Container = styled.div`
       right: 20px;
       top: 20px;
       cursor: pointer;
+      z-index: 10;
 
       .close-btn-icon {
         width: 12px;
@@ -208,62 +307,108 @@ const Container = styled.div`
       }
     }
 
-    .title {
-      font-size: var(--heading);
-      text-transform: uppercase;
-      font-weight: var(--font-w-600);
-      color: var(--theme1);
-      text-align: center;
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
+    .login-container,
+    .reset-container {
+      visibility: hidden;
+      position: absolute;
+      top: 0px;
+      left: 100%;
+      right: -100%;
+      bottom: 0px;
+      padding: 20px;
+      transition: all 0.5s ease;
+      background-color: var(--white);
 
-    .input-items-container {
-      width: 100%;
-    }
-
-    .error-container {
-      text-align: center;
-      font-size: var(--small);
-      color: var(--btn-red);
-      margin-top: 10px;
-    }
-
-    .btn-container {
-      width: 100%;
-      margin-top: 20px;
-
-      .forgot-password {
-        font-size: var(--small);
+      .title {
+        font-size: var(--heading);
+        text-transform: uppercase;
+        font-weight: var(--font-w-600);
+        color: var(--theme1);
         text-align: center;
-        margin-bottom: 20px;
-        cursor: pointer;
-        opacity: 0.7;
-        transition: all 0.3s ease;
+      }
 
-        &:hover {
-          text-decoration: underline;
-          opacity: 1;
+      .input-items-container {
+        width: 100%;
+      }
+
+      .content {
+        font-size: var(--ex-small);
+        font-weight: var(--font-w-600);
+        color: var(--btn-red);
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .error-container {
+        text-align: center;
+        font-size: var(--small);
+        color: var(--btn-red);
+        margin-top: 10px;
+      }
+
+      .btn-container {
+        width: 100%;
+        margin-top: 20px;
+
+        .forgot-password {
+          font-size: var(--small);
+          text-align: center;
+          margin-bottom: 20px;
+          cursor: pointer;
+          opacity: 0.7;
+          transition: all 0.3s ease;
+
+          &:hover {
+            text-decoration: underline;
+            opacity: 1;
+          }
+        }
+
+        .submit {
+          width: 100%;
+          height: 45px;
+          background-color: var(--theme1);
+          font-weight: var(--font-w-500);
+          font-size: var(--small);
+          color: var(--white);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 12px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: var(--theme1-alt);
+          }
         }
       }
 
-      .submit {
-        width: 100%;
-        height: 45px;
-        background-color: var(--theme1);
-        font-weight: var(--font-w-500);
-        font-size: var(--normal);
-        color: var(--white);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: var(--normal);
+      &.active {
+        visibility: visible;
+        left: 0px;
+        right: 0px;
+      }
+    }
 
-        &:hover {
-          background-color: var(--theme1-alt);
+    .reset-container {
+      top: 20px;
+
+      .btn-container {
+        .back-btn {
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: var(--theme1);
+          border-radius: 50%;
+          margin-top: 30px;
+          cursor: pointer;
+
+          img {
+            width: 15px;
+          }
         }
       }
     }

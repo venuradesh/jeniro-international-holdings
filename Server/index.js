@@ -243,6 +243,40 @@ app.put("/updateUserInfo", async (req, res) => {
   }
 });
 
+app.get("/checkemail", async (req, res) => {
+  const email = req.headers.email;
+  try {
+    const docsRef = await getDocs(query(collection(db, "users"), where("email", "==", email)));
+    if (docsRef.docs.length !== 0) {
+      res.status(200).send({ message: "user available", error: false });
+    } else {
+      throw { message: "No account registered for the email. Check your email or Register", error: true };
+    }
+  } catch (error) {
+    res.status(409).send(error);
+  }
+});
+
+app.put("/resetPassword", async (req, res) => {
+  const email = req.body.email;
+  const newPassword = req.body.newPassword;
+
+  try {
+    const docsRef = await getDocs(query(collection(db, "users"), where("email", "==", email)));
+    docsRef.docs.map((user) => {
+      updateDoc(doc(db, "users", user.id), {
+        password: newPassword,
+      })
+        .then(() => res.status(200).send({ status: "OK", error: false }))
+        .catch((err) => {
+          throw { error: true, status: "NOT UPDATED" };
+        });
+    });
+  } catch (error) {
+    res.status(409).send(error);
+  }
+});
+
 /* ************************************************************************************* */
 /* ************************************************************************************* */
 /* News Section */
