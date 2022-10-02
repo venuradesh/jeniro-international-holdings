@@ -11,7 +11,8 @@ import NewsCard from "../Components/NewsCard";
 import ContentNotFound from "./ContentNotFound";
 import Loading from "./Loading";
 
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://janiromoving-backend.herokuapp.com";
 
 function NewsSection() {
   const [newsData, setNewsData] = useState([]);

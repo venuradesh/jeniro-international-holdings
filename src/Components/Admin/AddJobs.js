@@ -9,7 +9,7 @@ import animationData from "../../assets/Lotties/submit-loading.json";
 import Done from "../../assets/checked.png";
 
 // const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "https://janiromoving-backend.herokuapp.com";
 
 function AddJobs() {
   const [error, setError] = useState("");

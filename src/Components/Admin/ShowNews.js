@@ -8,7 +8,7 @@ import Loading from "../../Screens/Loading";
 import NewsCard from "../NewsCard";
 
 // const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "https://janiromoving-backend.herokuapp.com";
 
 function ShowNews() {
   const [contentUnavailable, setContentUnAvailable] = useState(false);

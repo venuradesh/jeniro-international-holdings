@@ -10,7 +10,7 @@ import Point from "../assets/point.png";
 import JobApply from "../Components/JobApply";
 
 // const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "https://janiromoving-backend.herokuapp.com";
 
 function JobScreen({ admin = false }) {
   const jobid = useParams().id;
