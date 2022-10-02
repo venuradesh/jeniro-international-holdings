@@ -105,13 +105,13 @@ function Login({ loginClick, loginRequired = false }) {
             const newPassword = Date.now();
             emailjs
               .send(
-                "service_67en5i3",
+                "service_3ksbh8i",
                 "forgot_password101",
                 {
                   client_email: email,
                   password: newPassword,
                 },
-                "E-GOGf90UO7IZEPmO"
+                "Oyw8AB9B3LyH6ENdV"
               )
               .then((status) => {
                 if (status.text === "OK") {

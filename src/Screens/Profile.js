@@ -259,7 +259,7 @@ function Profile() {
               </form>
             </RightSection>
           </Container>
-          <Footer>&copy;2022, Jeniro International Holdings Pvt Ltd</Footer>
+          <Footer>&copy;2022, Janiro International Moving Service Pvt Ltd.</Footer>
         </>
       )}
     </>

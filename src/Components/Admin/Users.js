@@ -10,8 +10,8 @@ import * as animationData from "../../assets/Lotties/submit-loading.json";
 import Loading from "../../Screens/Loading";
 import ContentNotFound from "../../Screens/ContentNotFound";
 
-// const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "http://localhost:5000";
+// const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function Users() {
   const [error, setError] = useState("");
@@ -24,6 +24,8 @@ function Users() {
   const [resetBtnInserted, setResetBtnInserted] = useState(false);
   const [nic, setNIC] = useState("");
   const [searchClicked, setSearchClicked] = useState(false);
+  const [statusClicked, setStatusClicked] = useState(false);
+  const [status, setStatus] = useState("");
 
   const lottieOptions = {
     loop: true,
@@ -67,11 +69,12 @@ function Users() {
     setContentLoaded(false);
     setSearchClicked(true);
 
-    if (nic) {
+    if (nic || status) {
       axios
         .get(`${API_URL}/searchByNic`, {
           headers: {
             nic: nic,
+            status: status,
           },
         })
         .then((res) => {
@@ -86,13 +89,13 @@ function Users() {
         .catch((error) => {
           console.log(error);
           if (error.response.data.error) {
-            setError("NIC incorrect or Users not found with the NIC");
+            setError("NIC incorrect or Users not found with the status");
             setSearchUserNotFound({ found: true });
           }
         });
     } else {
       setSearchClicked(false);
-      setError("NIC not inserted");
+      setError("Insert an NIC or Select an user Status");
       setSearchUserNotFound({ found: true });
     }
   };
@@ -125,6 +128,33 @@ function Users() {
         />
 
         <div className="btn-container">
+          <div className="category">
+            <div className={`select ${statusClicked ? "active" : ""}`} onClick={() => (!statusClicked ? setStatusClicked(true) : setStatusClicked(false))}>
+              <select name="job-type" id="job-type" className="job-type" defaultValue={"none"} onChange={(e) => setStatus(e.target.value)}>
+                <option value="none" hidden className="select-item">
+                  User Status
+                </option>
+                <option value="Registered" className="select-item">
+                  Registered
+                </option>
+                <option value="First Payment" className="select-item">
+                  First Payment
+                </option>
+                <option value="Second Payment" className="select-item">
+                  Second Payment
+                </option>
+                <option value="Job offer given" className="select-item">
+                  Job offer given
+                </option>
+                <option value="Third Payment" className="select-item">
+                  Third Payment
+                </option>
+                <option value="Visa" className="select-item">
+                  Visa
+                </option>
+              </select>
+            </div>
+          </div>
           <div className="btn" onClick={() => onSearchClick()}>
             {searchClicked ? <Lottie options={lottieOptions} width={50} /> : "Search"}
           </div>
@@ -180,11 +210,62 @@ const Container = styled.div`
     margin-bottom: 20px;
 
     .btn-container {
-      width: 40%;
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       column-gap: 20px;
+
+      .category {
+        .select {
+          width: 100%;
+          min-width: 170px;
+          background-color: var(--white);
+          height: 50px;
+          border-radius: 8px;
+          cursor: pointer;
+          position: relative;
+
+          &::after {
+            content: "";
+            width: 0.8rem;
+            height: 0.6rem;
+            background-color: var(--theme1);
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            position: absolute;
+            right: 15px;
+            bottom: 50%;
+            transform: translateY(50%);
+            transition: all 0.3s ease;
+          }
+
+          &.active {
+            &::after {
+              clip-path: polygon(50% 0, 0 100%, 100% 100%);
+            }
+          }
+
+          .job-type {
+            background-color: transparent;
+            appearance: none;
+            border: none;
+            padding: 0 1em 0 1em;
+            width: 100%;
+            height: 50px;
+            font-family: inherit;
+            font-size: var(--normal);
+            cursor: inherit;
+            line-height: inherit;
+            outline: none;
+            color: gray;
+            font-weight: var(--font-w-500);
+
+            &::-ms-expand {
+              display: none;
+            }
+          }
+        }
+      }
 
       .btn {
         width: 100%;

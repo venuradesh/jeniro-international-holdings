@@ -192,7 +192,7 @@ const Container = styled.div`
 
   @media only screen and (max-width: 880px) {
     .cover {
-      height: 40%;
+      height: 100%;
 
       img {
         display: none;
@@ -209,7 +209,8 @@ const Container = styled.div`
 
   @media only screen and (max-width: 768px) {
     .cover {
-      height: 30%;
+      height: 100%;
+      margin-bottom: 90px;
     }
   }
 

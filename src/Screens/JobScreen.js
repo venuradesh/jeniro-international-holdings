@@ -7,6 +7,7 @@ import styled from "styled-components";
 import Back from "../assets/back.png";
 import Loading from "./Loading";
 import Point from "../assets/point.png";
+import JobApply from "../Components/JobApply";
 
 // const API_URL = "http://localhost:5000";
 const API_URL = "https://jeniro-international-holdings.herokuapp.com";
@@ -17,6 +18,7 @@ function JobScreen({ admin = false }) {
   const [jobDetails, setJobDetails] = useState(null);
   const [jobRequirements, setJobRequirements] = useState([]);
   const [jobResponsibilities, setJobResponsibilities] = useState([]);
+  const [applyBtnClicked, setApplyBtnClicked] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,9 +63,12 @@ function JobScreen({ admin = false }) {
                 {admin ? (
                   <></>
                 ) : (
-                  <a href={`mailto:jeniromoving@gmail.com?subject=Application for the job ${jobDetails.jobTitle}&body=Upload the CV and all other necessary documents with this email`} className="apply btn">
-                    Apply Now
-                  </a>
+                  <>
+                    <div className="apply btn" onClick={() => setApplyBtnClicked(true)}>
+                      Apply Now
+                    </div>
+                    {applyBtnClicked ? <JobApply jobName={jobDetails.jobTitle} setApply={setApplyBtnClicked} /> : <></>}
+                  </>
                 )}
               </div>
             </div>

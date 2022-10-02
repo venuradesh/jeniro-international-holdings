@@ -24,7 +24,7 @@ function JobApply({ jobName, jobid, setApply }) {
           ))}
         </div>
         <div className="btn-container">
-          <a href={`mailto:jeniromoving@gmail.com?subject=Application for the job ${jobName}&body=Upload the CV and all other necessary documents with this email`} className="btn">
+          <a href={`mailto:janiromoving.lakmal@gmail.com?subject=Application for the job ${jobName}&body=Upload the CV and all other necessary documents with this email`} className="btn">
             Apply
           </a>
         </div>

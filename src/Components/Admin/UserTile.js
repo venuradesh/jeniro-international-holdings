@@ -7,8 +7,8 @@ import * as animationData from "../../assets/Lotties/submit-loading.json";
 //images
 import User from "../../assets/user.png";
 
-// const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "http://localhost:5000";
+// const API_URL = "https://jeniro-international-holdings.herokuapp.com";
 
 function UserTile({ userData, id, componentRerender }) {
   const [selectionClicked, setSelectionClicked] = useState(false);
@@ -84,8 +84,8 @@ function UserTile({ userData, id, componentRerender }) {
             {userData.email}
           </div>
           <div className="address item">
-            <span>Address: </span>
-            {userData.address}
+            <span>Phone Number: </span>
+            {userData.phone}
           </div>
           <div className="nic item">
             <span>NIC No: </span>

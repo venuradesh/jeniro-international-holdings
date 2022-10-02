@@ -38,15 +38,15 @@ function Contact({ contactClick }) {
     if (name && email && message) {
       emailjs
         .send(
-          "service_67en5i3",
-          "template_omv832t",
+          "service_3ksbh8i",
+          "contact_us_template",
           {
-            our_name: "Jeniro Internationals",
+            our_name: "Jeniro International Holdings Pvt Ltd.",
             from_name: name,
             from_email: email,
             message: message,
           },
-          "E-GOGf90UO7IZEPmO"
+          "Oyw8AB9B3LyH6ENdV"
         )
         .then((res) => {
           if (res.text === "OK") {
