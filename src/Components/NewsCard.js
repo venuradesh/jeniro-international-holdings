@@ -9,7 +9,7 @@ import * as animationData from "../assets/Lotties/submit-loading.json";
 import Close from "../assets/close.png";
 
 // const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "https://janiromoving-backend.herokuapp.com";
 
 function NewsCard({ admin, data, newsId, loadComponent, readmore }) {
   const [userName, setUserName] = useState("");

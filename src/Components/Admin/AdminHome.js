@@ -9,7 +9,7 @@ import Loading from "../../Screens/Loading";
 import Cover from "../../assets/admin-cover.jpg";
 
 // const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "https://janiromoving-backend.herokuapp.com";
 
 function AdminHome() {
   const [homeData, setHomeData] = useState(null);

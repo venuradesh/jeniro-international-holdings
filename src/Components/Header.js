@@ -9,7 +9,7 @@ import Login from "../assets/login.png";
 import User from "../assets/user.png";
 
 // const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "https://janiromoving-backend.herokuapp.com";
 
 function Header({ scrolled = false, loginClick, aboutUsClick, contactClick, registerPage = false }) {
   const navigate = useNavigate();

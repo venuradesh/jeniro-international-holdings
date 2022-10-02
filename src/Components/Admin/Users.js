@@ -10,8 +10,8 @@ import * as animationData from "../../assets/Lotties/submit-loading.json";
 import Loading from "../../Screens/Loading";
 import ContentNotFound from "../../Screens/ContentNotFound";
 
-const API_URL = "http://localhost:5000";
-// const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+// const API_URL = "http://localhost:5000";
+const API_URL = "https://janiromoving-backend.herokuapp.com";
 
 function Users() {
   const [error, setError] = useState("");

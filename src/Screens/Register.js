@@ -17,7 +17,7 @@ import Wallpaper from "../assets/wallpaper3.jpg";
 import Logo from "../assets/logo.png";
 
 // const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "https://janiromoving-backend.herokuapp.com";
 
 function Register() {
   const navigate = useNavigate();

@@ -8,7 +8,7 @@ import Loading from "../../Screens/Loading";
 import JobTile from "../JobTile";
 
 // const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "https://janiromoving-backend.herokuapp.com";
 
 function ShowJobs() {
   const [isLoaded, setIsLoaded] = useState(false);

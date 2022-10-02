@@ -11,7 +11,7 @@ import Time from "../assets/time.png";
 import JobApply from "./JobApply";
 
 // const API_URL = "http://localhost:5000";
-const API_URL = "https://jeniro-international-holdings.herokuapp.com";
+const API_URL = "https://janiromoving-backend.herokuapp.com";
 
 function JobTile({ admin = false, jobDetails, id, componentRerender }) {
   const navigate = useNavigate();
