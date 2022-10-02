@@ -13,7 +13,7 @@ function AboutUs({ aboutUsClick }) {
         <div className="cover"></div>
         <div className="brand-container">
           <img src={Logo} alt="logo" className="logo-image" />
-          <div className="brand-name">Jeniro International Holding Pvt Ltd</div>
+          <div className="brand-name"> Janiro International Moving Service (Pvt) Ltd</div>
         </div>
       </div>
       <div className="separator"></div>
@@ -23,9 +23,8 @@ function AboutUs({ aboutUsClick }) {
         </div>
         <div className="title">About Us</div>
         <div className="content">
-          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus in repellendus dolores. Distinctio velit labore ducimus aperiam animi nulla dolores, dicta harum officiis eligendi minus, quo cumque qui mollitia sunt suscipit perspiciatis unde iste. Ad inventore temporibus fugit nulla ullam?</p>
-          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus in repellendus dolores. Distinctio velit labore ducimus aperiam animi nulla dolores, dicta harum officiis eligendi minus, quo cumque qui mollitia sunt suscipit perspiciatis unde iste. Ad inventore temporibus fugit nulla ullam?</p>
-          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus in repellendus dolores. Distinctio velit labore ducimus aperiam animi nulla dolores, dicta harum officiis eligendi minus, quo cumque qui mollitia sunt suscipit perspiciatis unde iste. Ad inventore temporibus fugit nulla ullam?</p>
+          <p>Our company is a registered company in the Democratic Socialist Republic of Sri Lanka.</p>
+          <p>We help Sri Lankan employees to find job opportunities in New Zealand and Australia. In addition, we also help in obtaining student visas and tourist visas. We consider it our responsibility to fulfill your dream of working abroad</p>
         </div>
       </div>
     </Container>

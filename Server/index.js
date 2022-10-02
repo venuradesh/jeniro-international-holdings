@@ -103,9 +103,18 @@ app.put("/updateStatus", (req, res) => {
 
 app.get("/searchByNic", async (req, res) => {
   const nic = req.headers.nic;
+  const status = req.headers.status;
+  let documents;
+
   const results = [];
   try {
-    const documents = await getDocs(query(collection(db, "users"), where("nic", "==", nic)));
+    if (nic && status) {
+      documents = await getDocs(query(collection(db, "users"), where("nic", "==", nic), where("status", "==", status)));
+    } else if (status) {
+      documents = await getDocs(query(collection(db, "users"), where("status", "==", status)));
+    } else {
+      documents = await getDocs(query(collection(db, "users"), where("nic", "==", nic)));
+    }
     if (documents.docs.length !== 0) {
       documents.docs.map((doc) => {
         results.push({ data: doc.data(), id: doc.id });
@@ -346,7 +355,7 @@ app.get("/get-news", async (req, res) => {
 app.get("/getLatestNews", async (req, res) => {
   let data = [];
   try {
-    const docsRef = await getDocs(collection(db, "news"), orderBy("time", "desc"), limit(3));
+    const docsRef = await getDocs(collection(db, "news"), orderBy("time", "desc"), limit(5));
     docsRef.docs.map((doc) => {
       data.push({ data: doc.data(), id: doc.id });
     });
@@ -472,24 +481,19 @@ app.get("/filterJobs", async (req, res) => {
   const jobtype = req.headers.jobtype;
   const jobtitle = req.headers.jobtitle;
   const result = [];
+  let documentsRef;
 
   try {
     if (jobtype && !jobtitle) {
-      const documentsRef = await getDocs(query(collection(db, "jobs"), where("jobCategroy", "==", jobtype)));
-      documentsRef.docs.map((doc) => {
-        result.push({ jobDetails: doc.data(), id: doc.id });
-      });
+      documentsRef = await getDocs(query(collection(db, "jobs"), where("jobCategroy", "==", jobtype)));
     } else if (jobtitle && !jobtype) {
-      const documentsRef = await getDocs(query(collection(db, "jobs"), where("jobTitle", "==", jobtitle)));
-      documentsRef.docs.map((doc) => {
-        result.push({ jobDetails: doc.data(), id: doc.id });
-      });
+      documentsRef = await getDocs(query(collection(db, "jobs"), where("jobTitle", "==", jobtitle)));
     } else {
-      const documentsRef = await getDocs(query(collection(db, "jobs"), where("jobTitle", "==", jobtitle), where("jobCategroy", "==", jobtype)));
-      documentsRef.docs.map((doc) => {
-        result.push({ jobDetails: doc.data(), id: doc.id });
-      });
+      documentsRef = await getDocs(query(collection(db, "jobs"), where("jobTitle", "==", jobtitle), where("jobCategroy", "==", jobtype)));
     }
+    documentsRef.docs.map((doc) => {
+      result.push({ jobDetails: doc.data(), id: doc.id });
+    });
 
     res.status(200).send({ result: result, error: false });
   } catch (error) {
